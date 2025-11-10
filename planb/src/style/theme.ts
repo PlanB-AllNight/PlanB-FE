@@ -12,6 +12,9 @@ export const theme = {
         fontSecondary: "#6B7280",
         gray: "#E5E7EB",
     },
+    font: {
+        family: `'Inter', system-ui, sans-serif`,
+    },
 } as const;
 
 export type ThemeType = typeof theme;
