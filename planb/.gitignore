@@ -1,0 +1,135 @@
+# ===================================================================
+# 1. Dependencies
+# ===================================================================
+# 패키지 매니저 의존성 폴더 (필수)
+node_modules/
+bower_components/
+
+# ===================================================================
+# 2. Build & Output
+# ===================================================================
+# React, Vite, Next.js 등의 빌드 결과물
+dist/
+dist-ssr/
+build/
+.next/
+.output/
+.vite/
+.vercel/
+
+# ===================================================================
+# 3. Local Environment Variables
+# ===================================================================
+# API 키, DB 비밀번호 등 민감한 정보를 포함하는 로컬 환경 변수 파일
+# 절대로 Git에 올리면 안 됩니다! (필수)
+.env
+.env.local
+.env.*.local
+*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ===================================================================
+# 4. Logs, Dumps & Backups
+# ===================================================================
+# 각종 로그 파일 및 디버그 파일
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.stackdump
+
+# 백업 파일
+**/*.backup.*
+**/*.back.*
+
+# ===================================================================
+# 5. OS Specific Files
+# ===================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+__MACOSX/
+.fseventsd/
+.Spotlight-V100
+.TemporaryItems/
+.Trashes/
+.DocumentRevisions-V100
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB/
+.AppleDesktop/
+Network Trash Folder/
+Temporary Items/
+.apdisk
+*.icloud
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# ===================================================================
+# 6. IDE & Editor Configuration
+# ===================================================================
+# VSCode (팀원 간 공유할 설정 파일은 !로 예외 처리)
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/*.code-snippets
+*.code-workspace
+.history/
+*.vsix
+
+# JetBrains (WebStorm, IntelliJ 등)
+.idea/
+
+# Visual Studio (Windows)
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*.sw?
+
+# 기타
+.ionide/
+
+# ===================================================================
+# 7. Project Specific (Optional)
+# ===================================================================
+# TypeScript 빌드 정보
+*.tsbuildinfo
+
+# 테스트 커버리지
+coverage/
+.nyc_output/
+
+# 디자인 임시 파일 (만약 소스 파일이라면 이 줄을 삭제하세요)
+psd/
+thumb/
+sketch/
