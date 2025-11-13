@@ -1,9 +1,16 @@
 import { createGlobalStyle } from 'styled-components';
 import { theme } from './theme';
+import reset from './reset';
 
 export const GlobalStyle = createGlobalStyle`
+  ${reset}
+
   * {
     box-sizing: border-box;
+  }
+
+  html {
+    font-size: 62.5%;
   }
 
   body {
@@ -12,6 +19,11 @@ export const GlobalStyle = createGlobalStyle`
     font-family: ${theme.font.family};
     color: ${theme.colors.fontPrimary};
     background-color: ${theme.colors.background};
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -21,5 +33,11 @@ export const GlobalStyle = createGlobalStyle`
 
   button {
     font-family: inherit;
+    cursor: pointer;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
   }
 `;
