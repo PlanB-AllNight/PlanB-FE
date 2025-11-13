@@ -8,7 +8,7 @@ export const theme = {
         },
 
         background: "#F9FAFB",
-        fontPrimary: "#5A4A42",
+        fontPrimary: "#1E1E1E",
         fontSecondary: "#6B7280",
         gray: "#E5E7EB",
     },
