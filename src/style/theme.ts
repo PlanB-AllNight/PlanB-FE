@@ -13,7 +13,7 @@ export const theme = {
         gray: "#E5E7EB",
     },
     font: {
-        family: `'Noto Sans KR', 'Inter', system-ui, sans-serif`,
+        family: `'Inter', system-ui, sans-serif`,
         weight: {
             medium: 500,
             bold: 700,
