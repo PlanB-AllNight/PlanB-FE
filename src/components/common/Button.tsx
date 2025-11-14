@@ -109,6 +109,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  white-space: nowrap;
 
   ${({ variant }) => variantStyles[variant]}
   ${({ size }) => sizeStyles[size]}
