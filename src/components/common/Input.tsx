@@ -31,7 +31,7 @@ const labelPositionStyles = {
     left: css`
         flex-direction: row;
         align-items: center;
-        gap: 125px;
+        gap: 55px;
     `
 };
 
@@ -65,7 +65,7 @@ const Wrapper = styled.div<{ labelPosition: "top" | "left" }>`
 
 const StyledLabel = styled.label<{ labelPosition: "top" | "left"; variant: "primary" | "gray" }>`
     width: ${({ labelPosition }) =>
-        labelPosition === "left" ? "120px" : "auto"};
+        labelPosition === "left" ? "127px" : "auto"};
     margin-left: ${({ labelPosition }) =>
         labelPosition === "top" ? "11px" : "0px"};
 
