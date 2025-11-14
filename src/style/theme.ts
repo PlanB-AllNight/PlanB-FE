@@ -14,6 +14,10 @@ export const theme = {
     },
     font: {
         family: `'Inter', system-ui, sans-serif`,
+        weight: {
+            medium: 500,
+            bold: 700,
+        },
     },
 } as const;
 
