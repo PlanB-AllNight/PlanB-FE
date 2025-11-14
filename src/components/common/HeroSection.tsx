@@ -101,5 +101,8 @@ const ButtonRow = styled.div`
     display: flex;
     gap: 40px;
     justify-content: center;
-    width: auto;
+    
+    > button {
+        width: auto;
+    }
 `;
