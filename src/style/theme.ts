@@ -8,12 +8,16 @@ export const theme = {
         },
 
         background: "#F9FAFB",
-        fontPrimary: "#5A4A42",
+        fontPrimary: "#1E1E1E",
         fontSecondary: "#6B7280",
         gray: "#E5E7EB",
     },
     font: {
-        family: `'Inter', system-ui, sans-serif`,
+        family: `'Noto Sans KR', 'Inter', system-ui, sans-serif`,
+        weight: {
+            medium: 500,
+            bold: 700,
+        },
     },
 } as const;
 
