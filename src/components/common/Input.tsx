@@ -65,7 +65,7 @@ const Wrapper = styled.div<{ labelPosition: "top" | "left" }>`
 
 const StyledLabel = styled.label<{ labelPosition: "top" | "left"; variant: "primary" | "gray" }>`
     width: ${({ labelPosition }) =>
-        labelPosition === "left" ? "127px" : "auto"};
+        labelPosition === "left" ? "150px" : "auto"};
     margin-left: ${({ labelPosition }) =>
         labelPosition === "top" ? "11px" : "0px"};
 
@@ -74,7 +74,7 @@ const StyledLabel = styled.label<{ labelPosition: "top" | "left"; variant: "prim
 
 const StyledInput = styled.input<{ variant: "primary" | "gray" }>`
     width: 100%;
-    height: 67px;
+    height: 65px;
     padding: 22px 26px;
     border-radius: 13px;
     font-size: 2rem;
