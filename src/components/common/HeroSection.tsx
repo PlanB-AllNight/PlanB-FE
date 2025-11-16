@@ -46,7 +46,7 @@ const HeroSection = ({
                         <Button
                             onClick={() => navigate(secondaryButton.link)}
                             variant="secondary"
-                            size="xl"
+                            size="md"
                         >
                             {secondaryButton.label}
                         </Button>
@@ -56,7 +56,7 @@ const HeroSection = ({
                         <Button
                             onClick={() => navigate(ghostButton.link)}
                             variant="ghost"
-                            size="xl"
+                            size="md"
                         >
                             {ghostButton.label}
                         </Button>
@@ -106,6 +106,6 @@ const ButtonRow = styled.div`
     justify-content: center;
     
     > button {
-        width: auto;
+        width: 206px;
     }
 `;
