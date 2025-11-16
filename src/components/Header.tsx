@@ -6,7 +6,7 @@ const Header = () => {
 
     return (
         <Container>
-            <Logo>PlanB</Logo>
+            <Logo to="/">PlanB</Logo>
 
             <MenuList>
                 <MenuItem to="/" active={pathname === "/"}>홈</MenuItem>
@@ -31,9 +31,10 @@ const Container = styled.header`
     justify-content: space-between;
 `;
 
-const Logo = styled.div`
-    font-size: 30px;
-    font-weight: 700;
+const Logo = styled(Link)`
+    font-size: 3rem;
+    font-weight: ${({ theme }) => theme.font.weight.bold};
+    cursor: pointer;
 `;
 
 const MenuList = styled.ul`
@@ -44,8 +45,8 @@ const MenuList = styled.ul`
 
 const MenuItem = styled(Link) <{ active?: boolean }>`
     text-decoration: none;
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 2rem;
+    font-weight: ${({ theme }) => theme.font.weight.medium};
     color: ${({ active, theme }) =>
         active ? theme.colors.primary[500] : theme.colors.fontPrimary};
     cursor: pointer;
