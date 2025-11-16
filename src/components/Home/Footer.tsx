@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 
 const Footer = () => {
     return (
@@ -13,10 +12,10 @@ const Footer = () => {
                 <MenuWrapper>
                     <Column>
                         <Title>서비스</Title>
-                        <ListLink to="/analysis">소비 분석</ListLink>
-                        <ListLink to="/budget">예산 관리</ListLink>
-                        <ListLink to="/consult">투자 상담</ListLink>
-                        <ListLink to="/info">지원 정보</ListLink>
+                        <List>소비 분석</List>
+                        <List>예산 관리</List>
+                        <List>투자 상담</List>
+                        <List>지원 정보</List>
                     </Column>
                     <Column>
                         <Title>기술 파트너</Title>
@@ -90,17 +89,6 @@ const Title = styled.h3`
 const List = styled.p`
     font-size: 1.6rem;
     color: ${({ theme }) => theme.colors.fontSecondary};
-`;
-
-const ListLink = styled(Link)`
-    font-size: 16px;
-    color: ${({ theme }) => theme.colors.fontSecondary};
-    text-decoration: none;
-    cursor: pointer;
-
-    &:hover {
-        text-decoration: underline;
-    }
 `;
 
 const Divider = styled.div`
