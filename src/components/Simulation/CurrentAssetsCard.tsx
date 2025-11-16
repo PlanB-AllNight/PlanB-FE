@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Button from "../common/Button";
-import WalletCircle from "../../assets/svgs/wallet-circle.svg?react";
+import WalletCircleIcon from "../../assets/svgs/wallet-circle.svg?react";
 
 interface CurrentAssetsCardProps {
     amount: string;
@@ -12,7 +12,7 @@ const CurrentAssetsCard = ({ amount, onEdit }: CurrentAssetsCardProps) => {
         <Wrapper>
             <ContentWrapper>
                 <TitleRow>
-                    <WalletCircle width="52" height="52" />
+                    <WalletCircleIcon width="52" height="52" />
                     <Title>현재 자산 현황</Title>
                 </TitleRow>
                 <Label>현재 보유 자금</Label>
