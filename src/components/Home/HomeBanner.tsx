@@ -1,7 +1,10 @@
 import styled from "styled-components";
 import Button from "../common/Button";
+import { useNavigate } from "react-router-dom";
 
 const HomeBanner = () => {
+    const navigate = useNavigate();
+    
     return (
         <Wrapper>
             <Title>
@@ -16,7 +19,7 @@ const HomeBanner = () => {
                 <Button
                     variant="primary"
                     size="md"
-                    onClick={() => (window.location.href = "/analyze")}
+                    onClick={() => navigate("/analysis")}
                 >
                     내 소비 분석하기
                 </Button>

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Button from "./Button";
+import { useNavigate } from "react-router-dom";
 
 interface HeroButton {
     label: string;
@@ -21,6 +22,8 @@ const HeroSection = ({
     secondaryButton,
     ghostButton,
 }: HeroSectionProps) => {
+    const navigate = useNavigate();
+
     const [before, after] = highlight
         ? title.split(highlight)
         : [title, ""];
@@ -41,9 +44,9 @@ const HeroSection = ({
                 <ButtonRow>
                     {secondaryButton && (
                         <Button
-                            onClick={() => (window.location.href = secondaryButton.link)}
+                            onClick={() => navigate(secondaryButton.link)}
                             variant="secondary"
-                            size="xl"
+                            size="md"
                         >
                             {secondaryButton.label}
                         </Button>
@@ -51,9 +54,9 @@ const HeroSection = ({
 
                     {ghostButton && (
                         <Button
-                            onClick={() => (window.location.href = ghostButton.link)}
+                            onClick={() => navigate(ghostButton.link)}
                             variant="ghost"
-                            size="xl"
+                            size="md"
                         >
                             {ghostButton.label}
                         </Button>
@@ -103,6 +106,6 @@ const ButtonRow = styled.div`
     justify-content: center;
     
     > button {
-        width: auto;
+        width: 206px;
     }
 `;
