@@ -111,10 +111,22 @@ const StyledInput = styled.input<{
         border: ${({ variant }) => variantStyles[variant].input};
         background-color: #ffffff;
         box-shadow: none;
+        border-color: ${({ hasError }) => (hasError ? "#0D9488" : "")};
     }
 
     // 에러일 때 border 컬러 변경
     border-color: ${({ hasError }) => (hasError ? "#0D9488" : "")};
+
+    /* autofill 스타일 제거 */
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+        box-shadow: 0 0 0px 1000px white inset !important;
+        border: 1.5px solid ${({ theme }) => theme.colors.primary[500]} !important;
+        -webkit-text-fill-color: ${({ theme }) => theme.colors.fontPrimary} !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
 `;
 
 const Error = styled.p`
