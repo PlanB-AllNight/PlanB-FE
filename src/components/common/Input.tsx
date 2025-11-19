@@ -5,18 +5,27 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     labelPosition?: "top" | "left";
     variant?: "primary" | "gray";
+    error?: string;
 }
 
 const Input = ({
     label,
     labelPosition = "top",
     variant = "primary",
+    error,
     ...rest
 }: InputProps) => {
     return (
         <Wrapper labelPosition={labelPosition}>
             {label && <StyledLabel labelPosition={labelPosition} variant={variant}>{label}</StyledLabel>}
-            <StyledInput variant={variant} {...rest} />
+            <InputBox>
+                <StyledInput
+                    variant={variant}
+                    hasError={!!error}
+                    {...rest}
+                />
+                {error && <Error>{error}</Error>}
+            </InputBox>
         </Wrapper>
     );
 };
@@ -72,7 +81,16 @@ const StyledLabel = styled.label<{ labelPosition: "top" | "left"; variant: "prim
     ${({ variant }) => variantStyles[variant].label}
 `;
 
-const StyledInput = styled.input<{ variant: "primary" | "gray" }>`
+const InputBox = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+`
+
+const StyledInput = styled.input<{
+    variant: "primary" | "gray";
+    hasError: boolean;
+}>`
     width: 100%;
     height: 65px;
     padding: 22px 26px;
@@ -94,4 +112,14 @@ const StyledInput = styled.input<{ variant: "primary" | "gray" }>`
         background-color: #ffffff;
         box-shadow: none;
     }
+
+    // 에러일 때 border 컬러 변경
+    border-color: ${({ hasError }) => (hasError ? "#0D9488" : "")};
+`;
+
+const Error = styled.p`
+    color: ${({ theme }) => theme.colors.primary[400]};
+    margin-top: 7px;
+    margin-left: 10px;
+    font-size: 1.5rem;
 `;
