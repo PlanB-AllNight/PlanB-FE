@@ -114,7 +114,6 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    margin-top: 36px;
     box-sizing: border-box;
 `;
 
