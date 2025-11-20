@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useRef } from "react";
 
 import HeroSection from "../components/common/HeroSection";
 import CurrentAssetsCard from "../components/Simulation/CurrentAssetsCard";
@@ -30,10 +29,16 @@ const SimulationPage = () => {
     const navigate = useNavigate();
     const goalFormRef = useRef<HTMLDivElement>(null);
 
+    const [currentAssets, setCurrentAssets] = useState("500000");
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
     const [isCustomMode, setIsCustomMode] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+
+    const handleAssetsEdit = (newAmount: string) => {
+        setCurrentAssets(newAmount);
+        console.log('자산 변경:', newAmount);
+    };
 
     const scrollToGoalForm = () => {
         setTimeout(() => {
@@ -94,8 +99,9 @@ const SimulationPage = () => {
             <Content>
                 <Container>
                     <CurrentAssetsCard 
-                        amount="500,000" 
-                        onEdit={() => alert('자산 수정')} 
+                        // TODO: 소비 분석 값 가져오기
+                        amount={currentAssets}
+                        onEdit={handleAssetsEdit}
                     />
 
                     <Divider />
