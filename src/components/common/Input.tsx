@@ -5,18 +5,20 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     labelPosition?: "top" | "left";
     variant?: "primary" | "gray";
+    height?: string;
 }
 
 const Input = ({
     label,
     labelPosition = "top",
     variant = "primary",
+    height,
     ...rest
 }: InputProps) => {
     return (
         <Wrapper labelPosition={labelPosition}>
             {label && <StyledLabel labelPosition={labelPosition} variant={variant}>{label}</StyledLabel>}
-            <StyledInput variant={variant} {...rest} />
+            <StyledInput variant={variant} height={height} {...rest} />
         </Wrapper>
     );
 };
@@ -72,10 +74,10 @@ const StyledLabel = styled.label<{ labelPosition: "top" | "left"; variant: "prim
     ${({ variant }) => variantStyles[variant].label}
 `;
 
-const StyledInput = styled.input<{ variant: "primary" | "gray" }>`
+const StyledInput = styled.input<{ variant: "primary" | "gray"; height?: string }>`
     width: 100%;
-    height: 67px;
-    padding: 22px 26px;
+    height: ${({ height }) => height || "67px"};
+    padding: 0 26px;
     border-radius: 13px;
     font-size: 2rem;
     font-weight: ${({ theme }) => theme.font.weight.medium};

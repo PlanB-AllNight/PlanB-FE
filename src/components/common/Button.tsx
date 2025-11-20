@@ -85,7 +85,7 @@ const sizeStyles = {
     padding: 3.7rem 2rem;
   `,
   md: css`
-    height: 65px;
+    height: 60px;
     font-size: 2rem;
     font-weight: ${({ theme }) => theme.font.weight.bold};
     padding: 2rem 2.5rem;

@@ -58,6 +58,7 @@ const GoalSettingForm = ({ isCustom, defaultValues, onConfirm }: GoalSettingForm
                         value={values.title}
                         onChange={handleChange}
                         variant="gray"
+                        height="60px"
                     />
                 )}
 
@@ -71,6 +72,7 @@ const GoalSettingForm = ({ isCustom, defaultValues, onConfirm }: GoalSettingForm
                         onChange={handleChange}
                         variant="gray"
                         type="number"
+                        height="60px"
                     />
                     <Input
                         label="목표 기간 (개월)"
@@ -81,6 +83,7 @@ const GoalSettingForm = ({ isCustom, defaultValues, onConfirm }: GoalSettingForm
                         onChange={handleChange}
                         variant="gray"
                         type="number"
+                        height="60px"
                     />
                 </InputRow>
 
