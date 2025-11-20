@@ -17,12 +17,12 @@ import MarriageIcon from "../assets/svgs/marriage.svg?react";
 import AddCircleIcon from "../assets/svgs/add-circle.svg?react";
 
 const EVENTS = [
-    { id: 1, title: "교환학생", description: "해외 대학에서 한 학기 이상 교류 학습을 준비", amount: "10,000,000", period: "1년", icon: <GlobalIcon width="51" height="51" /> },
-    { id: 2, title: "해외여행", description: "꿈꿔왔던 해외여행을 현실로 만들기", amount: "6,000,000", period: "6개월", icon: <FlightIcon width="51" height="51" /> },
-    { id: 3, title: "노트북 구매", description: "학업이나 작업용으로 성능 좋은 노트북을 새로 장만", amount: "2,500,000", period: "3개월", icon: <LaptopIcon width="51" height="51" /> },
-    { id: 4, title: "학비 마련", description: "학기 등록금, 강의 수강료 등 학업 관련 비용을 준비", amount: "5,000,000", period: "1년", icon: <SchoolIcon width="51" height="51" /> },
-    { id: 5, title: "월세 보증금", description: "자취나 독립 생활을 위한 보증금 또는 월세 자금 마련", amount: "5,000,000", period: "1년", icon: <HouseIcon width="51" height="51" /> },
-    { id: 6, title: "결혼 준비", description: "결혼을 앞두고 필요한 준비자금, 예식, 신혼집 등", amount: "50,000,000", period: "3년", icon: <MarriageIcon width="51" height="51" /> },
+    { id: 1, title: "교환학생", description: "해외 대학에서 한 학기 이상 교류 학습을 준비", amount: "10000000", period: "12", icon: <GlobalIcon width="51" height="51" /> },
+    { id: 2, title: "해외여행", description: "꿈꿔왔던 해외여행을 현실로 만들기", amount: "6000000", period: "6", icon: <FlightIcon width="51" height="51" /> },
+    { id: 3, title: "노트북 구매", description: "학업이나 작업용으로 성능 좋은 노트북을 새로 장만", amount: "2500000", period: "3", icon: <LaptopIcon width="51" height="51" /> },
+    { id: 4, title: "학비 마련", description: "학기 등록금, 강의 수강료 등 학업 관련 비용을 준비", amount: "5000000", period: "12", icon: <SchoolIcon width="51" height="51" /> },
+    { id: 5, title: "월세 보증금", description: "자취나 독립 생활을 위한 보증금 또는 월세 자금 마련", amount: "5000000", period: "12", icon: <HouseIcon width="51" height="51" /> },
+    { id: 6, title: "결혼 준비", description: "결혼을 앞두고 필요한 준비자금, 예식, 신혼집 등", amount: "50000000", period: "36", icon: <MarriageIcon width="51" height="51" /> },
 ];
 
 const SimulationPage = () => {
@@ -33,15 +33,24 @@ const SimulationPage = () => {
     const [isConfirmed, setIsConfirmed] = useState(false);
 
     const handleEventClick = (id: number) => {
-        setSelectedEventId(id);
-        setIsCustomMode(false);
-        setIsConfirmed(false);
+        if (selectedEventId === id) {
+            setSelectedEventId(null);
+            setIsConfirmed(false);
+        } else {
+            setSelectedEventId(id);
+            setIsCustomMode(false);
+            setIsConfirmed(false);
+        }
     };
 
     const handleCustomClick = () => {
-        setSelectedEventId(null);
-        setIsCustomMode(true);
-        setIsConfirmed(false);
+        if (isCustomMode) {
+            setIsCustomMode(false);
+        } else {
+            setSelectedEventId(null);
+            setIsCustomMode(true);
+            setIsConfirmed(false);
+        }
     };
 
     const handleConfirm = () => {
@@ -82,7 +91,7 @@ const SimulationPage = () => {
                                 title={event.title}
                                 description={event.description}
                                 amount={parseInt(event.amount).toLocaleString() + "원"}
-                                period={event.period}
+                                period={event.period + "개월"}
                                 isSelected={selectedEventId === event.id}
                                 onClick={() => handleEventClick(event.id)}
                             />
