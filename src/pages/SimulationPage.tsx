@@ -33,6 +33,7 @@ const SimulationPage = () => {
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
     const [isCustomMode, setIsCustomMode] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
 
     const scrollToGoalForm = () => {
         setTimeout(() => {
@@ -45,23 +46,31 @@ const SimulationPage = () => {
 
     const handleEventClick = (id: number) => {
         if (selectedEventId === id) {
-            setSelectedEventId(null);
-            setIsConfirmed(false);
+            setIsVisible(false);
+            setTimeout(() => {
+                setSelectedEventId(null);
+                setIsConfirmed(false);
+            }, 100);
         } else {
             setSelectedEventId(id);
             setIsCustomMode(false);
             setIsConfirmed(false);
+            setIsVisible(true);
             scrollToGoalForm();
         }
     };
 
     const handleCustomClick = () => {
         if (isCustomMode) {
-            setIsCustomMode(false);
+            setIsVisible(false);
+            setTimeout(() => {
+                setIsCustomMode(false);
+            }, 100);
         } else {
             setSelectedEventId(null);
             setIsCustomMode(true);
             setIsConfirmed(false);
+            setIsVisible(true);
             scrollToGoalForm();
         }
     };
@@ -126,33 +135,35 @@ const SimulationPage = () => {
 
                     {(selectedEventId !== null || isCustomMode) && (
                         <>
-                            <div ref={goalFormRef}>
-                                <GoalSettingForm
-                                    isCustom={isCustomMode}
-                                    defaultValues={selectedEventData ? {
-                                        title: selectedEventData.title,
-                                        amount: selectedEventData.amount,
-                                        period: selectedEventData.period
-                                    } : undefined}
-                                    onConfirm={handleConfirm}
-                                />
-                            </div>
+                            <AnimatedWrapper isVisible={isVisible}>
+                                <div ref={goalFormRef}>
+                                    <GoalSettingForm
+                                        isCustom={isCustomMode}
+                                        defaultValues={selectedEventData ? {
+                                            title: selectedEventData.title,
+                                            amount: selectedEventData.amount,
+                                            period: selectedEventData.period
+                                        } : undefined}
+                                        onConfirm={handleConfirm}
+                                    />
+                                </div>
 
-                            
-                            <BottomSection>
-                                <BottomTitle>챌린지 시뮬레이션 시작</BottomTitle>
-                                <BottomDesc>설정한 목표에 따른 맞춤형 저축 계획을 확인해보세요</BottomDesc>
-                                <BottomButtonWrapper>
-                                    <Button
-                                        variant={isConfirmed ? "secondary" : "neutral"}
-                                        size="md"
-                                        disabled={!isConfirmed}
-                                        onClick={() => navigate('/result')}
-                                    >
-                                        {isConfirmed ? "시뮬레이션하기" : "목표를 설정해주세요"}
-                                    </Button>
-                                </BottomButtonWrapper>
-                            </BottomSection>
+                                
+                                <BottomSection>
+                                    <BottomTitle>챌린지 시뮬레이션 시작</BottomTitle>
+                                    <BottomDesc>설정한 목표에 따른 맞춤형 저축 계획을 확인해보세요</BottomDesc>
+                                    <BottomButtonWrapper>
+                                        <Button
+                                            variant={isConfirmed ? "secondary" : "neutral"}
+                                            size="md"
+                                            disabled={!isConfirmed}
+                                            onClick={() => navigate('/result')}
+                                        >
+                                            {isConfirmed ? "시뮬레이션하기" : "목표를 설정해주세요"}
+                                        </Button>
+                                    </BottomButtonWrapper>
+                                </BottomSection>
+                            </AnimatedWrapper>
                         </>
                     )}
                 </Container>
@@ -208,9 +219,13 @@ const SubTitle = styled.p`
 const Grid = styled.div`
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 27px;
+    gap: 20px;
 
-    @media (max-width: 412px) {
+    @media (max-width: 1024px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 768px) {
         grid-template-columns: 1fr;
     }
 `;
@@ -288,4 +303,13 @@ const BottomDesc = styled.p`
 const BottomButtonWrapper = styled.div`
     width: 206px;
     margin-top: 16px;
+`;
+
+const AnimatedWrapper = styled.div<{ isVisible: boolean }>`
+    display: flex;
+    flex-direction: column;
+    gap: 52px;
+    opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+    transform: translateY(${({ isVisible }) => (isVisible ? '0' : '20px')});
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 `;
