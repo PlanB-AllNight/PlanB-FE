@@ -5,26 +5,26 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     labelPosition?: "top" | "left";
     variant?: "primary" | "gray";
-    height?: string;
     error?: string;
+    height?: string;
 }
 
 const Input = ({
     label,
     labelPosition = "top",
     variant = "primary",
-    height,
     error,
+    height,
     ...rest
 }: InputProps) => {
     return (
         <Wrapper labelPosition={labelPosition}>
             {label && <StyledLabel labelPosition={labelPosition} variant={variant}>{label}</StyledLabel>}
-            <StyledInput variant={variant} height={height} {...rest} />
             <InputBox>
                 <StyledInput
                     variant={variant}
                     hasError={!!error}
+                    height={height}
                     {...rest}
                 />
                 {error && <Error>{error}</Error>}
