@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 
 import HeroSection from "../components/common/HeroSection";
 import CurrentAssetsCard from "../components/Simulation/CurrentAssetsCard";
@@ -27,10 +28,20 @@ const EVENTS = [
 
 const SimulationPage = () => {
     const navigate = useNavigate();
+    const goalFormRef = useRef<HTMLDivElement>(null);
 
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
     const [isCustomMode, setIsCustomMode] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
+
+    const scrollToGoalForm = () => {
+        setTimeout(() => {
+            goalFormRef.current?.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+        }, 100);
+    };
 
     const handleEventClick = (id: number) => {
         if (selectedEventId === id) {
@@ -40,6 +51,7 @@ const SimulationPage = () => {
             setSelectedEventId(id);
             setIsCustomMode(false);
             setIsConfirmed(false);
+            scrollToGoalForm();
         }
     };
 
@@ -50,6 +62,7 @@ const SimulationPage = () => {
             setSelectedEventId(null);
             setIsCustomMode(true);
             setIsConfirmed(false);
+            scrollToGoalForm();
         }
     };
 
@@ -112,32 +125,37 @@ const SimulationPage = () => {
                     </DashedButton>
 
                     {(selectedEventId !== null || isCustomMode) && (
-                        <GoalSettingForm
-                            isCustom={isCustomMode}
-                            defaultValues={selectedEventData ? {
-                                title: selectedEventData.title,
-                                amount: selectedEventData.amount,
-                                period: selectedEventData.period
-                            } : undefined}
-                            onConfirm={handleConfirm}
-                        />
+                        <>
+                            <div ref={goalFormRef}>
+                                <GoalSettingForm
+                                    isCustom={isCustomMode}
+                                    defaultValues={selectedEventData ? {
+                                        title: selectedEventData.title,
+                                        amount: selectedEventData.amount,
+                                        period: selectedEventData.period
+                                    } : undefined}
+                                    onConfirm={handleConfirm}
+                                />
+                            </div>
+
+                            
+                            <BottomSection>
+                                <BottomTitle>챌린지 시뮬레이션 시작</BottomTitle>
+                                <BottomDesc>설정한 목표에 따른 맞춤형 저축 계획을 확인해보세요</BottomDesc>
+                                <BottomButtonWrapper>
+                                    <Button
+                                        variant={isConfirmed ? "secondary" : "neutral"}
+                                        size="md"
+                                        disabled={!isConfirmed}
+                                        onClick={() => navigate('/result')}
+                                    >
+                                        {isConfirmed ? "시뮬레이션하기" : "목표를 설정해주세요"}
+                                    </Button>
+                                </BottomButtonWrapper>
+                            </BottomSection>
+                        </>
                     )}
                 </Container>
-
-                <BottomSection>
-                        <BottomTitle>챌린지 시뮬레이션 시작</BottomTitle>
-                        <BottomDesc>설정한 목표에 따른 맞춤형 저축 계획을 확인해보세요</BottomDesc>
-                        <BottomButtonWrapper>
-                            <Button
-                                variant={isConfirmed ? "secondary" : "neutral"}
-                                size="md"
-                                disabled={!isConfirmed}
-                                onClick={() => navigate('/result')}
-                            >
-                                {isConfirmed ? "시뮬레이션하기" : "목표를 설정해주세요"}
-                            </Button>
-                        </BottomButtonWrapper>
-                    </BottomSection>
             </Content>
         </Wrapper>
     );
@@ -248,6 +266,7 @@ const BottomSection = styled.div`
     background-color: ${({ theme }) => theme.colors.primary[500]};
     border-radius: 18px;
     padding: 80px 0;
+    margin-top: 52px;
     text-align: center;
     color: white;
     display: flex;
