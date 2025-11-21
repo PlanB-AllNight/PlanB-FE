@@ -1,9 +1,23 @@
 import styled from "styled-components";
+import { useState } from "react";
 import HeroSection from "../components/common/HeroSection";
 import Button from "../components/common/Button";
 import DataIcon from "../assets/svgs/data.svg?react";
 
 const AnalysisStartPage = () => {
+    const [loading, setLoading] = useState(false);
+
+    const handleStart = () => {
+        setLoading(true);
+
+        // 임시 API 대기 시뮬레이션 (2초)
+        setTimeout(() => {
+            setLoading(false);
+            // 추후 API 완료 후 AnalysisPage로 navigate 예정
+            // navigate("/analysis");
+        }, 2000);
+    };
+
     return (
         <Wrapper>
             <HeroSection
@@ -22,8 +36,17 @@ const AnalysisStartPage = () => {
                     <Button
                         variant="primary"
                         size="md"
+                        onClick={handleStart}
+                        disabled={loading}
                     >
-                        소비 분석 시작하기
+                        {loading ? (
+                            <>
+                                <Spinner />
+                                분석 중...
+                            </>
+                        ) : (
+                            "소비 분석 시작하기"
+                        )}
                     </Button>
                 </ButtonWrapper>
             </BottomSection>
@@ -84,4 +107,20 @@ const Description = styled.p`
 const ButtonWrapper = styled.div`
     width: 300px;
     margin-top: 50px;
-`
+`;
+
+const Spinner = styled.div`
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    animation: spin 0.6s linear infinite;
+
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+`;
