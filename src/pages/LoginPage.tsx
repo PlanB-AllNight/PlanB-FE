@@ -14,12 +14,14 @@ const LoginPage = () => {
                         label="아이디"
                         variant="primary"
                         name="userId"
+                        height="63px"
                     />
                     <Input
                         label="비밀번호"
                         variant="primary"
                         name="password"
                         type="password"
+                        height="63px"
                     />
                 </InputRow>
                 <ButtonRow>
@@ -40,7 +42,7 @@ export default LoginPage;
 const Wrapper = styled.div`
     width: 100%;
     max-width: 900px;
-    height: calc(100vh - 70px);
+    min-height: calc(100vh - 70px); 
     margin: 0 auto;
     display: flex;
     flex-direction: column;

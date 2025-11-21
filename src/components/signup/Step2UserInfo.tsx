@@ -138,7 +138,7 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
                         value={form.userId}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        error={error.userId}
+                        height="60px"
                     />
                     <Input
                         label="비밀번호"
@@ -151,6 +151,7 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={error.password}
+                        height="60px"
                     />
                     <Input
                         label="비밀번호 확인"
@@ -163,6 +164,7 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={error.confirmPassword}
+                        height="60px"
                     />
                     <Input
                         label="이름"
@@ -173,7 +175,7 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
                         value={form.name}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        error={error.name}
+                        height="60px"
                     />
                     <Input
                         label="생년월일"
@@ -185,6 +187,7 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={error.birth}
+                        height="60px"
                     />
                     <Input
                         label="연락처"
@@ -196,6 +199,7 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={error.phone}
+                        height="60px"
                     />
                 </ContentBox>
             </Card>
