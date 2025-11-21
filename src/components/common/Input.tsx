@@ -5,18 +5,27 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     labelPosition?: "top" | "left";
     variant?: "primary" | "gray";
+    error?: string;
 }
 
 const Input = ({
     label,
     labelPosition = "top",
     variant = "primary",
+    error,
     ...rest
 }: InputProps) => {
     return (
         <Wrapper labelPosition={labelPosition}>
             {label && <StyledLabel labelPosition={labelPosition} variant={variant}>{label}</StyledLabel>}
-            <StyledInput variant={variant} {...rest} />
+            <InputBox>
+                <StyledInput
+                    variant={variant}
+                    hasError={!!error}
+                    {...rest}
+                />
+                {error && <Error>{error}</Error>}
+            </InputBox>
         </Wrapper>
     );
 };
@@ -65,16 +74,25 @@ const Wrapper = styled.div<{ labelPosition: "top" | "left" }>`
 
 const StyledLabel = styled.label<{ labelPosition: "top" | "left"; variant: "primary" | "gray" }>`
     width: ${({ labelPosition }) =>
-        labelPosition === "left" ? "127px" : "auto"};
+        labelPosition === "left" ? "150px" : "auto"};
     margin-left: ${({ labelPosition }) =>
         labelPosition === "top" ? "11px" : "0px"};
 
     ${({ variant }) => variantStyles[variant].label}
 `;
 
-const StyledInput = styled.input<{ variant: "primary" | "gray" }>`
+const InputBox = styled.div`
     width: 100%;
-    height: 67px;
+    display: flex;
+    flex-direction: column;
+`
+
+const StyledInput = styled.input<{
+    variant: "primary" | "gray";
+    hasError: boolean;
+}>`
+    width: 100%;
+    height: 65px;
     padding: 22px 26px;
     border-radius: 13px;
     font-size: 2rem;
@@ -93,5 +111,26 @@ const StyledInput = styled.input<{ variant: "primary" | "gray" }>`
         border: ${({ variant }) => variantStyles[variant].input};
         background-color: #ffffff;
         box-shadow: none;
+        border-color: ${({ hasError }) => (hasError ? "#0D9488" : "")};
     }
+
+    // 에러일 때 border 컬러 변경
+    border-color: ${({ hasError }) => (hasError ? "#0D9488" : "")};
+
+    /* autofill 스타일 제거 */
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+        box-shadow: 0 0 0px 1000px white inset !important;
+        -webkit-text-fill-color: ${({ theme }) => theme.colors.fontPrimary} !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+`;
+
+const Error = styled.p`
+    color: ${({ theme }) => theme.colors.primary[400]};
+    margin-top: 7px;
+    margin-left: 10px;
+    font-size: 1.5rem;
 `;
