@@ -6,6 +6,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     labelPosition?: "top" | "left";
     variant?: "primary" | "gray";
     height?: string;
+    error?: string;
 }
 
 const Input = ({
@@ -13,12 +14,21 @@ const Input = ({
     labelPosition = "top",
     variant = "primary",
     height,
+    error,
     ...rest
 }: InputProps) => {
     return (
         <Wrapper labelPosition={labelPosition}>
             {label && <StyledLabel labelPosition={labelPosition} variant={variant}>{label}</StyledLabel>}
             <StyledInput variant={variant} height={height} {...rest} />
+            <InputBox>
+                <StyledInput
+                    variant={variant}
+                    hasError={!!error}
+                    {...rest}
+                />
+                {error && <Error>{error}</Error>}
+            </InputBox>
         </Wrapper>
     );
 };
@@ -67,14 +77,25 @@ const Wrapper = styled.div<{ labelPosition: "top" | "left" }>`
 
 const StyledLabel = styled.label<{ labelPosition: "top" | "left"; variant: "primary" | "gray" }>`
     width: ${({ labelPosition }) =>
-        labelPosition === "left" ? "127px" : "auto"};
+        labelPosition === "left" ? "150px" : "auto"};
     margin-left: ${({ labelPosition }) =>
         labelPosition === "top" ? "11px" : "0px"};
 
     ${({ variant }) => variantStyles[variant].label}
 `;
 
-const StyledInput = styled.input<{ variant: "primary" | "gray"; height?: string }>`
+
+const InputBox = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+`;
+
+const StyledInput = styled.input<{
+    variant: "primary" | "gray";
+    hasError: boolean;
+    height?: string;
+}>`
     width: 100%;
     height: ${({ height }) => height || "67px"};
     padding: 0 26px;
@@ -95,5 +116,26 @@ const StyledInput = styled.input<{ variant: "primary" | "gray"; height?: string 
         border: ${({ variant }) => variantStyles[variant].input};
         background-color: #ffffff;
         box-shadow: none;
+        border-color: ${({ hasError }) => (hasError ? "#0D9488" : "")};
     }
+
+    // 에러일 때 border 컬러 변경
+    border-color: ${({ hasError }) => (hasError ? "#0D9488" : "")};
+
+    /* autofill 스타일 제거 */
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+        box-shadow: 0 0 0px 1000px white inset !important;
+        -webkit-text-fill-color: ${({ theme }) => theme.colors.fontPrimary} !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+`;
+
+const Error = styled.p`
+    color: ${({ theme }) => theme.colors.primary[400]};
+    margin-top: 7px;
+    margin-left: 10px;
+    font-size: 1.5rem;
 `;
