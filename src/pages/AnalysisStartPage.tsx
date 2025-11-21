@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import HeroSection from "../components/common/HeroSection";
 import Button from "../components/common/Button";
 import DataIcon from "../assets/svgs/data.svg?react";
 
 const AnalysisStartPage = () => {
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleStart = () => {
         setLoading(true);
@@ -13,8 +15,8 @@ const AnalysisStartPage = () => {
         // 임시 API 대기 시뮬레이션 (2초)
         setTimeout(() => {
             setLoading(false);
-            // 추후 API 완료 후 AnalysisPage로 navigate 예정
-            // navigate("/analysis");
+            // 분석 완료 후 결과 페이지로 이동
+            navigate("/analysis/result");
         }, 2000);
     };
 
