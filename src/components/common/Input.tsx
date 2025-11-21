@@ -6,6 +6,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     labelPosition?: "top" | "left";
     variant?: "primary" | "gray";
     error?: string;
+    height?: string;
 }
 
 const Input = ({
@@ -13,6 +14,7 @@ const Input = ({
     labelPosition = "top",
     variant = "primary",
     error,
+    height,
     ...rest
 }: InputProps) => {
     return (
@@ -22,6 +24,7 @@ const Input = ({
                 <StyledInput
                     variant={variant}
                     hasError={!!error}
+                    height={height}
                     {...rest}
                 />
                 {error && <Error>{error}</Error>}
@@ -81,19 +84,21 @@ const StyledLabel = styled.label<{ labelPosition: "top" | "left"; variant: "prim
     ${({ variant }) => variantStyles[variant].label}
 `;
 
+
 const InputBox = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-`
+`;
 
 const StyledInput = styled.input<{
     variant: "primary" | "gray";
     hasError: boolean;
+    height?: string;
 }>`
     width: 100%;
-    height: 65px;
-    padding: 22px 26px;
+    height: ${({ height }) => height || "67px"};
+    padding: 0 26px;
     border-radius: 13px;
     font-size: 2rem;
     font-weight: ${({ theme }) => theme.font.weight.medium};
@@ -104,12 +109,11 @@ const StyledInput = styled.input<{
         color: ${({ theme }) => theme.colors.fontSecondary};
     }
 
-    &:hover,
     &:focus,
     &:active {
         outline: none;
-        border: ${({ variant }) => variantStyles[variant].input};
         background-color: #ffffff;
+        border: 2px solid ${({ theme }) => theme.colors.primary[400]};
         box-shadow: none;
         border-color: ${({ hasError }) => (hasError ? "#0D9488" : "")};
     }

@@ -1,12 +1,12 @@
 import styled from "styled-components";
-import HomeBanner from "../components/home/HomeBanner";
-import ServiceCard from "../components/home/ServiceCard";
+import HomeBanner from "../components/Home/HomeBanner";
+import ServiceCard from "../components/Home/ServiceCard";
 import DataIcon from "../assets/svgs/data.svg?react";
 import WalletIcon from "../assets/svgs/wallet.svg?react";
 import InvestIcon from "../assets/svgs/invest.svg?react";
 import SimulationIcon from "../assets/svgs/simulation.svg?react";
 import HeroSection from "../components/common/HeroSection";
-import Footer from "../components/home/Footer";
+import Footer from "../components/Home/Footer";
 
 const HomePage = () => {
     return (

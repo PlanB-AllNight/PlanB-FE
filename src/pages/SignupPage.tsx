@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Step1Terms from "../components/signup/Step1Terms";
-import Step2UserInfo from "../components/signup/Step2UserInfo";
-import Step3Complete from "../components/signup/Step3Complete";
+import Step1Terms from "../components/Signup/Step1Terms";
+import Step2UserInfo from "../components/Signup/Step2UserInfo";
+import Step3Complete from "../components/Signup/Step3Complete";
 
 const SignupPage = () => {
     const [step, setStep] = useState(1);

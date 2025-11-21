@@ -22,6 +22,8 @@ const Header = () => {
 export default Header;
 
 const Container = styled.header`
+    position: sticky;
+    top: 0;
     width: 100%;
     height: 70px;
     padding: 0 50px;
@@ -29,6 +31,8 @@ const Container = styled.header`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 `;
 
 const Logo = styled(Link)`

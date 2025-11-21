@@ -71,7 +71,7 @@ const TitleRow = styled.div`
 
 const Title = styled.h3`
     font-size: 2.2rem;
-    font-weight: ${({ theme }) => theme.font.weight.bold};
+    font-weight: ${({ theme }) => theme.font.weight.semibold};
 `;
 
 const Description = styled.p`
