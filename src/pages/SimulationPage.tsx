@@ -34,6 +34,7 @@ const SimulationPage = () => {
     const [isCustomMode, setIsCustomMode] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+    const [goalData, setGoalData] = useState<{ title: string; amount: string; period: string } | null>(null);
 
     const handleAssetsEdit = (newAmount: string) => {
         setCurrentAssets(newAmount);
@@ -80,9 +81,10 @@ const SimulationPage = () => {
         }
     };
 
-    const handleConfirm = () => {
+    const handleConfirm = (data: { title: string; amount: string; period: string }) => {
         setIsConfirmed(true);
-        // TODO: 여기서 입력된 데이터를 저장하는 로직 추가 가능
+        setGoalData(data);
+        // TODO: 저장된 goalData를 백엔드로 보내거나 다음 페이지로 넘김
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     };
 

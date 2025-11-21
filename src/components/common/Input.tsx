@@ -109,12 +109,11 @@ const StyledInput = styled.input<{
         color: ${({ theme }) => theme.colors.fontSecondary};
     }
 
-    &:hover,
     &:focus,
     &:active {
         outline: none;
-        border: ${({ variant }) => variantStyles[variant].input};
         background-color: #ffffff;
+        border: 2px solid ${({ theme }) => theme.colors.primary[400]};
         box-shadow: none;
         border-color: ${({ hasError }) => (hasError ? "#0D9488" : "")};
     }

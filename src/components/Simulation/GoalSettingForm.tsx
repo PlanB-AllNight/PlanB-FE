@@ -11,7 +11,7 @@ interface GoalSettingFormProps {
         amount: string;
         period: string;
     };
-    onConfirm: () => void;
+    onConfirm: (data: { title: string; amount: string; period: string }) => void;
 }
 
 const GoalSettingForm = ({ isCustom, defaultValues, onConfirm }: GoalSettingFormProps) => {
@@ -32,7 +32,7 @@ const GoalSettingForm = ({ isCustom, defaultValues, onConfirm }: GoalSettingForm
                 period: defaultValues.period.replace(/[^0-9]/g, ""),
             });
         }
-    }, [isCustom, defaultValues]);
+    }, [isCustom, defaultValues?.title, defaultValues?.amount, defaultValues?.period]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -40,6 +40,10 @@ const GoalSettingForm = ({ isCustom, defaultValues, onConfirm }: GoalSettingForm
     };
 
     const isValid = values.amount !== "" && values.period !== "" && (isCustom ? values.title !== "" : true);
+
+    const handleConfirmClick = () => {
+        onConfirm(values);
+    };
 
     return (
         <Container>
@@ -91,7 +95,7 @@ const GoalSettingForm = ({ isCustom, defaultValues, onConfirm }: GoalSettingForm
                     variant="primary" 
                     size="md" 
                     disabled={!isValid} 
-                    onClick={onConfirm}
+                    onClick={handleConfirmClick}
                 >
                     목표 설정하기
                 </Button>
