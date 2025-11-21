@@ -119,7 +119,7 @@ const StyledInput = styled.input<{
     }
 
     // 에러일 때 border 컬러 변경
-    border-color: ${({ hasError }) => (hasError ? "#0D9488" : "")};
+    border-color: ${({ hasError }) => (hasError ? "#ff0033" : "")};
 
     /* autofill 스타일 제거 */
     &:-webkit-autofill,
@@ -133,7 +133,7 @@ const StyledInput = styled.input<{
 `;
 
 const Error = styled.p`
-    color: ${({ theme }) => theme.colors.primary[400]};
+    color: #ff0033;
     margin-top: 7px;
     margin-left: 10px;
     font-size: 1.5rem;

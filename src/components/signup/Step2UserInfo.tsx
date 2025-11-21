@@ -19,19 +19,15 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
     });
 
     const [error, setError] = useState({
-        userId: "",
         password: "",
         confirmPassword: "",
-        name: "",
         birth: "",
         phone: "",
     });
 
     const [touched, setTouched] = useState({
-        userId: false,
         password: false,
         confirmPassword: false,
-        name: false,
         birth: false,
         phone: false,
     });
@@ -84,72 +80,36 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
     useEffect(() => {
         const newError = { ...error };
 
-        // 아이디
-        if (touched.userId) {
-            if (form.userId.trim() === "") {
-                newError.userId = "아이디를 입력해주세요.";
-            } else {
-                newError.userId = "";
-            }
-        }
-
         // 비밀번호
-        if (touched.password) {
-            if (form.password.trim() === "") {
-                newError.password = "비밀번호를 입력해주세요.";
-            } else if (!isValidPassword(form.password)) {
-                newError.password =
-                    "영문, 숫자, 특수문자 포함 8~20자로 입력해주세요.";
-            } else {
-                newError.password = "";
-            }
+        if (form.password !== "" && !isValidPassword(form.password)) {
+            newError.password = "영문, 숫자, 특수문자 포함 8~20자로 입력해주세요.";
+        } else {
+            newError.password = "";
         }
 
         // 비밀번호 확인
-        if (touched.confirmPassword) {
-            if (form.confirmPassword.trim() === "") {
-                newError.confirmPassword = "비밀번호 확인을 입력해주세요.";
-            } else if (form.confirmPassword !== form.password) {
-                newError.confirmPassword = "비밀번호가 일치하지 않습니다.";
-            } else {
-                newError.confirmPassword = "";
-            }
-        }
-
-        // 이름
-        if (touched.name) {
-            if (form.name.trim() === "") {
-                newError.name = "이름을 입력해주세요.";
-            } else {
-                newError.name = "";
-            }
+        if (form.confirmPassword !== "" && form.confirmPassword !== form.password) {
+            newError.confirmPassword = "비밀번호가 일치하지 않습니다.";
+        } else {
+            newError.confirmPassword = "";
         }
 
         // 생년월일
-        if (touched.birth) {
-            if (form.birth.trim() === "") {
-                newError.birth = "생년월일을 입력해주세요.";
-            } else if (!isValidBirth(form.birth)) {
-                newError.birth =
-                    "생년월일 8자리를 정확히 입력해주세요.";
-            } else {
-                newError.birth = "";
-            }
+        if (form.birth !== "" && !isValidBirth(form.birth)) {
+            newError.birth = "생년월일 8자리를 정확히 입력해주세요.";
+        } else {
+            newError.birth = "";
         }
 
         // 연락처
-        if (touched.phone) {
-            if (form.phone.trim() === "") {
-                newError.phone = "연락처를 입력해주세요.";
-            } else if (!isValidPhone(form.phone)) {
-                newError.phone = "숫자만 입력해주세요.";
-            } else {
-                newError.phone = "";
-            }
+        if (form.phone !== "" && !isValidPhone(form.phone)) {
+            newError.phone = "숫자만 입력해주세요.";
+        } else {
+            newError.phone = "";
         }
 
         setError(newError);
-    }, [form, touched]);
+    }, [form]);
 
 
     const isFormValid = () => {
@@ -178,7 +138,7 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
                         value={form.userId}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        error={error.userId}
+                        height="60px"
                     />
                     <Input
                         label="비밀번호"
@@ -191,6 +151,7 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={error.password}
+                        height="60px"
                     />
                     <Input
                         label="비밀번호 확인"
@@ -203,6 +164,7 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={error.confirmPassword}
+                        height="60px"
                     />
                     <Input
                         label="이름"
@@ -213,7 +175,7 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
                         value={form.name}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        error={error.name}
+                        height="60px"
                     />
                     <Input
                         label="생년월일"
@@ -225,6 +187,7 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={error.birth}
+                        height="60px"
                     />
                     <Input
                         label="연락처"
@@ -236,6 +199,7 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={error.phone}
+                        height="60px"
                     />
                 </ContentBox>
             </Card>
