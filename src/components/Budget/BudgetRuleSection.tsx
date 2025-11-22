@@ -59,7 +59,7 @@ const budgetSummary: Record<RuleId, {
 };
 
 const BudgetRuleSection = () => {
-    const [selectedRule, setSelectedRule] = useState<RuleId>("50-30-20");
+    const [selectedRule, setSelectedRule] = useState<RuleId>("40-30-30");
     const summary = budgetSummary[selectedRule];
     const selectedRuleData = ruleOptions.find(r => r.id === selectedRule);
 
