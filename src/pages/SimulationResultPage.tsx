@@ -91,6 +91,7 @@ const SimulationResultPage = () => {
             <HeroSection
                 title="시뮬레이션 결과"
                 description={`목표를 향한 여정을 AI가 함께 설계해드립니다.\n현재 자산을 기반으로 다양한 플랜을 시뮬레이션하고, 투자와 절약 전략을 추천받아보세요.`}
+                variant="light"
             />
 
             <Content>
