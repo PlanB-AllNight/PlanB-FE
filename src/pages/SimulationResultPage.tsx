@@ -118,14 +118,16 @@ const SimulationResultPage = () => {
 
                 {!isChallengeCreated && (
                     <ButtonWrapper ref={buttonRef}>
-                        <Button
-                            variant={selectedPlanId ? "primary" : "neutral"}
-                            size="md"
-                            disabled={!selectedPlanId}
-                            onClick={handleCreateChallenge}
-                        >
-                            {selectedPlanId ? "챌린지 생성하기" : "플랜을 선택해주세요"}
-                        </Button>
+                        <Box>
+                            <Button
+                                variant={selectedPlanId ? "primary" : "neutral"}
+                                size="md"
+                                disabled={!selectedPlanId}
+                                onClick={handleCreateChallenge}
+                            >
+                                {selectedPlanId ? "챌린지 생성하기" : "플랜을 선택해주세요"}
+                            </Button>
+                        </Box>
                     </ButtonWrapper>
                 )}
 
@@ -155,13 +157,13 @@ const Content = styled.div`
     padding: 52px 20px;
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 26px;
 `;
 
 const SectionTitle = styled.h2`
-    font-size: 2.4rem;
+    font-size: 2.5rem;
     font-weight: ${({ theme }) => theme.font.weight.bold};
-    margin-top: 20px;
+    margin-top: 49px;
 `;
 
 const Grid = styled.div`
@@ -178,10 +180,12 @@ const Grid = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-    margin-top: 20px;
-    
-    > button {
-        height: 70px;
-        font-size: 2rem;
-    }
+    margin-top: 34px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
+const Box = styled.div`
+    width: 412px;
 `;

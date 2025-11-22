@@ -39,6 +39,7 @@ const Wrapper = styled.div`
     gap: 20px;
     border-radius: 18px;
     text-align: center;
+    margin-top: 34px;
 `;
 
 const Title = styled.h2`

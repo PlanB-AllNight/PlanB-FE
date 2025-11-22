@@ -127,6 +127,7 @@ const Header = styled.div`
 
 const Title = styled.h3`
     font-size: 2.5rem;
+    color: ${({ theme }) => theme.colors.primary[500]};
     font-weight: ${({ theme }) => theme.font.weight.bold};
     max-width: 450px;
     word-break: keep-all;
