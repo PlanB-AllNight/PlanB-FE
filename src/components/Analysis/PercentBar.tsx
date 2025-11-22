@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { formatNumber } from "../../utils/format";
 
 interface PercentBarProps {
     label: string;
@@ -22,7 +21,7 @@ const PercentBar = ({ label, ratio, amount, count }: PercentBarProps) => {
             </PercentWrapper>
 
             <Amount>
-                {formatNumber(amount)}원({count}건)
+                {amount.toLocaleString()}원({count}건)
             </Amount>
         </Wrapper>
     );

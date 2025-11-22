@@ -1,10 +1,9 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { formatNumber } from "../utils/format";
 import type { AnalysisResult } from "../types/analysis";
 import HeroSection from "../components/common/HeroSection";
 import CategorySection from "../components/Analysis/CategorySection";
-import AiInsightSection from "../components/Analysis/AIInsightSection";
+import AiInsightSection from "../components/Analysis/AiInsightSection";
 import Button from "../components/common/Button";
 
 const mockAnalysisData: AnalysisResult = {
@@ -69,15 +68,15 @@ const AnalysisPage = () => {
                 <KPISection>
                     <KPICard>
                         <Label>총 수입</Label>
-                        <Value>{formatNumber(data.summary.totalIncome)}원</Value>
+                        <Value>{data.summary.totalIncome.toLocaleString()}원</Value>
                     </KPICard>
                     <KPICard>
                         <Label>총 지출</Label>
-                        <Value>{formatNumber(data.summary.totalSpending)}원</Value>
+                        <Value>{data.summary.totalSpending.toLocaleString()}원</Value>
                     </KPICard>
                     <KPICard>
                         <Label>저축 가능액</Label>
-                        <Value>{formatNumber(data.summary.possibleSaving)}원</Value>
+                        <Value>{data.summary.possibleSaving.toLocaleString()}원</Value>
                     </KPICard>
                 </KPISection>
 
