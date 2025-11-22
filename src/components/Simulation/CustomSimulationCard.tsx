@@ -30,7 +30,10 @@ const CustomSimulationCard = ({
     const isWarning = mainTag === "비추천";
 
     return (
-        <Wrapper isSelected={isSelected}>
+        <Wrapper 
+            isSelected={isSelected}
+            onClick={onSelect}
+        >
             <Header>
                 <Title>{plan.title}</Title>
                 <StatusTag isWarning={isWarning}>{mainTag}</StatusTag>
@@ -82,7 +85,11 @@ const CustomSimulationCard = ({
             <Button
                 variant={isSelected ? "primary" : "gray"}
                 size="sm"
-                onClick={onSelect}
+                fontSize="1.6rem"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onSelect();
+                }}
             >
                 {isSelected ? "선택됨" : "플랜 선택하기"}
             </Button>
@@ -103,6 +110,8 @@ const Wrapper = styled.div<{ isSelected: boolean }>`
     flex-direction: column;
     gap: 26px;
     transition: all 0.2s;
+    box-sizing: border-box;
+    cursor: pointer;
 
     &:hover {
         border-color: ${({ theme }) => theme.colors.primary[400]};
@@ -120,6 +129,7 @@ const Title = styled.h3`
     font-size: 2.5rem;
     font-weight: ${({ theme }) => theme.font.weight.bold};
     max-width: 450px;
+    word-break: keep-all;
 `;
 
 const StatusTag = styled.span<{ isWarning: boolean }>`
