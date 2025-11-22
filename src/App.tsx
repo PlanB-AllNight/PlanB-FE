@@ -5,6 +5,7 @@ import SignupPage from './pages/SignupPage';
 import LoginPage from './pages/LoginPage';
 import ScrollToTop from './components/ScrollToTop';
 import SimulationPage from './pages/SimulationPage';
+import SimulationResultPage from './pages/SimulationResultPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path='/signup' element={<SignupPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path="/simulate" element={<SimulationPage />} />
+        <Route path="/result" element={<SimulationResultPage />} />
       </Routes>
     </>
   );
