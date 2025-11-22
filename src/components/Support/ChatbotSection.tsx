@@ -149,9 +149,9 @@ const Box = styled.div`
 `;
 
 const Desc = styled.p`
-    font-size: 2rem; 
+    font-size: 1.6rem; 
     color: ${({theme}) => theme.colors.fontSecondary};
-    line-height: 1.2;
+    line-height: 1.3;
     margin-bottom: 26px;
 `;
 

@@ -12,7 +12,7 @@ const Header = () => {
                 <MenuItem to="/" active={pathname === "/"}>홈</MenuItem>
                 <MenuItem to="/analysis" active={pathname === "/analysis"}>소비분석</MenuItem>
                 <MenuItem to="/simulate" active={pathname === "/simulate"}>시뮬레이션</MenuItem>
-                <MenuItem to="/info" active={pathname === "/info"}>지원정보/상담</MenuItem>
+                <MenuItem to="/support" active={pathname === "/support"}>지원정보/상담</MenuItem>
                 <MenuItem to="/mypage" active={pathname === "/mypage"}>마이페이지</MenuItem>
             </MenuList>
         </Container>
