@@ -1,6 +1,18 @@
 import styled from "styled-components";
 import SectionCard from "./SectionCard";
-import type { BudgetCategoryGroup } from "../../types/analysis";
+
+interface BudgetCategoryItem {
+    name: string;
+    current: number;
+    recommended: number;
+    status: StatusType;
+}
+
+interface BudgetCategoryGroup {
+    groupName: BudgetGroupName;
+    groupAmount: number;
+    items: BudgetCategoryItem[];
+}
 
 interface CategoryBudgetProps {
     categoryBudgetGroups: BudgetCategoryGroup[];
@@ -24,7 +36,8 @@ const statusColors = {
     },
 } as const;
 
-type StatusType = keyof typeof statusColors;
+export type StatusType = keyof typeof statusColors;
+export type BudgetGroupName = "필수 지출" | "선택 지출" | "저축/투자";
 
 const CategoryBudgetSection = ({ categoryBudgetGroups }: CategoryBudgetProps) => {
     return (
@@ -108,6 +121,7 @@ const CategoryBudgetCard = styled.div`
     border-radius: 13px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 18px;
 `;
 
