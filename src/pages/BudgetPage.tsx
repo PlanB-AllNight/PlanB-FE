@@ -152,14 +152,14 @@ const BudgetPage = () => {
                         <Button
                             variant="ghost"
                             size="md"
-                            onClick={() => navigate('/anlaysis/result')}
+                            onClick={() => navigate('/analysis/result')}
                         >
                             소비 분석 보기
                         </Button>
                         <Button
                             variant="secondary"
                             size="md"
-                            onClick={() => navigate('/simulation')}
+                            onClick={() => navigate('/simulate')}
                         >
                             나의 챌린지 시뮬레이션
                         </Button>
