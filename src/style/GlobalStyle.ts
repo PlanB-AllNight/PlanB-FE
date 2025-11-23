@@ -40,4 +40,15 @@ export const GlobalStyle = createGlobalStyle`
     text-decoration: none;
     color: inherit;
   }
+
+  /* 스크롤바 숨기기 (웹킷 브라우저) */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 스크롤 기능은 유지하면서, 스크롤바만 숨기기 */
+  body {
+    -ms-overflow-style: none; /* IE, Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 `;
