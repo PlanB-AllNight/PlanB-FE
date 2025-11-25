@@ -5,6 +5,7 @@ import SignupPage from './pages/SignupPage';
 import LoginPage from './pages/LoginPage';
 import ScrollToTop from './components/ScrollToTop';
 import SimulationPage from './pages/SimulationPage';
+import AnalysisPage from "./pages/AnalysisPage";
 import AnalysisStartPage from "./pages/AnalysisStartPage";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path='/signup' element={<SignupPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path="/simulate" element={<SimulationPage />} />
+        <Route path="/analysis/result" element={<AnalysisPage />} />
         <Route path="/analysis" element={<AnalysisStartPage />} />
       </Routes>
     </>
