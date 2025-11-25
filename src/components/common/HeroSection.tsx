@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
 
@@ -13,6 +13,7 @@ interface HeroSectionProps {
     description: string;
     secondaryButton?: HeroButton;
     ghostButton?: HeroButton;
+    variant?: 'dark' | 'light';
 }
 
 const HeroSection = ({
@@ -21,6 +22,7 @@ const HeroSection = ({
     description,
     secondaryButton,
     ghostButton,
+    variant = 'dark',
 }: HeroSectionProps) => {
     const navigate = useNavigate();
 
@@ -32,13 +34,13 @@ const HeroSection = ({
     const sectionHeight = hasButton ? "495px" : "260px";
 
     return (
-        <Wrapper height={sectionHeight}>
-            <Title>
+        <Wrapper height={sectionHeight} variant={variant}>
+            <Title variant={variant}>
                 {before}
                 {highlight && <Highlight>{highlight}</Highlight>}
                 {after}
             </Title>
-            <Description>{description}</Description>
+            <Description variant={variant}>{description}</Description>
 
             {(secondaryButton || ghostButton) && (
                 <ButtonRow>
@@ -69,10 +71,13 @@ const HeroSection = ({
 
 export default HeroSection;
 
-const Wrapper = styled.div<{ height: string }>`
+const Wrapper = styled.div<{ height: string; variant: 'dark' | 'light' }>`
     width: 100%;
     height: ${({ height }) => height};
-    background: linear-gradient(90deg, #0F766E 40%, #05956A 100%);
+    ${({ variant, theme }) => variant === 'dark' 
+        ? css`background: linear-gradient(90deg, #0F766E 40%, #05956A 100%);`
+        : css`background-color: ${theme.colors.primary[100]};`
+    }
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -80,20 +85,24 @@ const Wrapper = styled.div<{ height: string }>`
     gap: 20px;
 `;
 
-const Title = styled.h1`
+const Title = styled.h1<{ variant: 'dark' | 'light' }>`
     font-size: 3.6rem;
     font-weight: ${({ theme }) => theme.font.weight.bold};
-    color: white;
+    color: ${({ variant, theme }) => 
+        variant === 'dark' ? 'white' : theme.colors.fontPrimary
+    };
 `;
 
 const Highlight = styled.span`
     color: ${({ theme }) => theme.colors.primary[200]};
 `;
 
-const Description = styled.p`
+const Description = styled.p<{ variant: 'dark' | 'light' }>`
     font-size: 2rem;
     font-weight: ${({ theme }) => theme.font.weight.regular};
-    color: ${({ theme }) => theme.colors.gray};
+    color: ${({ variant, theme }) => 
+        variant === 'dark' ? theme.colors.gray : theme.colors.fontSecondary
+    };
     line-height: 1.4;
     white-space: pre-line;
     text-align: center;

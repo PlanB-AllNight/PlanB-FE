@@ -12,6 +12,7 @@ export const theme = {
         fontPrimary: "#1E1E1E",
         fontSecondary: "#6B7280",
         gray: "#E5E7EB",
+        blue: "#1E4ED8",
     },
     font: {
         family: `'Inter', system-ui, sans-serif`,

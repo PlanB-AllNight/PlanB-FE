@@ -10,8 +10,18 @@ const Header = () => {
 
             <MenuList>
                 <MenuItem to="/" active={pathname === "/"}>홈</MenuItem>
-                <MenuItem to="/analysis" active={pathname === "/analysis"}>소비분석</MenuItem>
-                <MenuItem to="/simulate" active={pathname === "/simulate"}>시뮬레이션</MenuItem>
+                <MenuItem
+                    to="/analysis"
+                    active={pathname.startsWith("/analysis") || pathname.startsWith("/budget")}
+                >
+                    소비분석
+                </MenuItem>
+                <MenuItem 
+                    to="/simulate" 
+                    active={pathname === "/simulate" || pathname === "/result"}
+                >
+                    시뮬레이션
+                </MenuItem>
                 <MenuItem to="/info" active={pathname === "/info"}>지원정보/상담</MenuItem>
                 <MenuItem to="/mypage" active={pathname === "/mypage"}>마이페이지</MenuItem>
             </MenuList>
@@ -25,7 +35,7 @@ const Container = styled.header`
     position: sticky;
     top: 0;
     width: 100%;
-    height: 70px;
+    height: 53px;
     padding: 0 50px;
     background: white;
     display: flex;
@@ -36,21 +46,22 @@ const Container = styled.header`
 `;
 
 const Logo = styled(Link)`
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: ${({ theme }) => theme.font.weight.bold};
     cursor: pointer;
 `;
 
 const MenuList = styled.ul`
     display: flex;
-    gap: 30px;
+    gap: 25px;
     list-style: none;
 `;
 
 const MenuItem = styled(Link) <{ active?: boolean }>`
     text-decoration: none;
-    font-size: 2rem;
-    font-weight: ${({ theme }) => theme.font.weight.medium};
+    font-size: 1.7rem;
+    font-weight: ${({ active, theme }) =>
+        active ? theme.font.weight.bold : theme.font.weight.medium};
     color: ${({ active, theme }) =>
         active ? theme.colors.primary[500] : theme.colors.fontPrimary};
     cursor: pointer;

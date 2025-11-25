@@ -5,16 +5,20 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'ghost' | 'gray' | 'light' | 'outline' | 'neutral';
   size?: 'xl' | 'lg' | 'md' | 'sm';
+  height?: string;
+  fontSize?: string;
 }
 
 function Button({
   children,
   variant = 'primary',
   size = 'md',
+  height,
+  fontSize,
   ...rest
 }: ButtonProps) {
   return (
-    <StyledButton variant={variant} size={size} {...rest}>
+    <StyledButton variant={variant} size={size} height={height} fontSize={fontSize} {...rest}>
       {children}
     </StyledButton>
   );
@@ -98,7 +102,7 @@ const sizeStyles = {
   `,
 };
 
-type StyledButtonProps = Required<Pick<ButtonProps, 'variant' | 'size'>>;
+type StyledButtonProps = Required<Pick<ButtonProps, 'variant' | 'size'>> & { height?: string; fontSize?: string };
 
 const StyledButton = styled.button<StyledButtonProps>`
   width: 100%;
@@ -112,6 +116,10 @@ const StyledButton = styled.button<StyledButtonProps>`
 
   ${({ variant }) => variantStyles[variant]}
   ${({ size }) => sizeStyles[size]}
+
+  ${({ height }) => height && css`height: ${height};`}
+
+  ${({ fontSize }) => fontSize && css`font-size: ${fontSize};`}
 
   /* 비활성화 */
   &:disabled {
