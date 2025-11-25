@@ -30,7 +30,7 @@ const Container = styled.header`
     position: sticky;
     top: 0;
     width: 100%;
-    height: 70px;
+    height: 53px;
     padding: 0 50px;
     background: white;
     display: flex;
@@ -41,21 +41,22 @@ const Container = styled.header`
 `;
 
 const Logo = styled(Link)`
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: ${({ theme }) => theme.font.weight.bold};
     cursor: pointer;
 `;
 
 const MenuList = styled.ul`
     display: flex;
-    gap: 30px;
+    gap: 25px;
     list-style: none;
 `;
 
 const MenuItem = styled(Link) <{ active?: boolean }>`
     text-decoration: none;
-    font-size: 2rem;
-    font-weight: ${({ theme }) => theme.font.weight.medium};
+    font-size: 1.7rem;
+    font-weight: ${({ active, theme }) =>
+        active ? theme.font.weight.bold : theme.font.weight.medium};
     color: ${({ active, theme }) =>
         active ? theme.colors.primary[500] : theme.colors.fontPrimary};
     cursor: pointer;
