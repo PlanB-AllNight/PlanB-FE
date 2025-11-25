@@ -1,10 +1,20 @@
 import styled from "styled-components";
 import Button from "../common/Button";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const HomeBanner = () => {
     const navigate = useNavigate();
-    
+    const { isLoggedIn } = useAuth();
+
+    const checkAndNavigate = (path: string) => {
+        if (!isLoggedIn) {
+            navigate("/login");
+            return;
+        }
+        navigate(path);
+    };
+
     return (
         <Wrapper>
             <Title>
@@ -19,7 +29,7 @@ const HomeBanner = () => {
                 <Button
                     variant="primary"
                     size="md"
-                    onClick={() => navigate("/analysis")}
+                    onClick={() => checkAndNavigate("/analysis")}
                 >
                     내 소비 분석하기
                 </Button>

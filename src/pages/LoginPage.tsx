@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import { loginUser } from "../api/auth";
+import { useAuth } from "../context/AuthContext";
 
 const LoginPage = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const [form, setForm] = useState({
         userId: "",
@@ -26,9 +28,7 @@ const LoginPage = () => {
 
         try {
             const data = await loginUser(form);
-
-            // 토큰 저장
-            localStorage.setItem("access_token", data.access_token);
+            login(data.access_token);
             navigate("/");
         } catch (error: any) {
             setError(error.response?.data?.detail || "로그인 실패");
