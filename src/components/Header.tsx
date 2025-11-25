@@ -16,7 +16,12 @@ const Header = () => {
                 >
                     소비분석
                 </MenuItem>
-                <MenuItem to="/simulate" active={pathname === "/simulate"}>시뮬레이션</MenuItem>
+                <MenuItem 
+                    to="/simulate" 
+                    active={pathname === "/simulate" || pathname === "/result"}
+                >
+                    시뮬레이션
+                </MenuItem>
                 <MenuItem to="/info" active={pathname === "/info"}>지원정보/상담</MenuItem>
                 <MenuItem to="/mypage" active={pathname === "/mypage"}>마이페이지</MenuItem>
             </MenuList>
