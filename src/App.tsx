@@ -6,6 +6,9 @@ import LoginPage from './pages/LoginPage';
 import ScrollToTop from './components/ScrollToTop';
 import SimulationPage from './pages/SimulationPage';
 import SimulationResultPage from './pages/SimulationResultPage';
+import BudgetPage from "./pages/BudgetPage";
+import AnalysisPage from "./pages/AnalysisPage";
+import AnalysisStartPage from "./pages/AnalysisStartPage";
 
 function App() {
   return (
@@ -19,6 +22,9 @@ function App() {
         <Route path='/login' element={<LoginPage />} />
         <Route path="/simulate" element={<SimulationPage />} />
         <Route path="/result" element={<SimulationResultPage />} />
+        <Route path="/budget" element={<BudgetPage />} />
+        <Route path="/analysis/result" element={<AnalysisPage />} />
+        <Route path="/analysis" element={<AnalysisStartPage />} />
       </Routes>
     </>
   );
