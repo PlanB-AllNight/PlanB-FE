@@ -58,10 +58,10 @@ const SimulationPage = () => {
             try {
                 const data: ChallengeInitResponse = await getChallengeInit(token);
 
-                // if (!data.has_analysis) {
-                //     setModalStatus('missing');
-                //     return;
-                // } 
+                if (!data.has_analysis) {
+                    setModalStatus('missing');
+                    return;
+                } 
 
                 setCurrentAssets(data.current_asset.toString());
                 setMonthlySavePotential(data.monthly_save_potential);
@@ -132,7 +132,6 @@ const SimulationPage = () => {
     const handleConfirm = (data: { title: string; amount: string; period: string }) => {
         setIsConfirmed(true);
         setGoalData(data);
-        // TODO: 저장된 goalData를 백엔드로 보내거나 다음 페이지로 넘김
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     };
 

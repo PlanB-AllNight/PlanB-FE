@@ -128,3 +128,38 @@ export const postChallengeSimulate = async (token: string, data: SimulateRequest
     });
     return response.data;
 };
+
+export interface CreateChallengeRequest {
+    event_name: string;
+    target_amount: number;
+    period_months: number;
+    current_amount: number;
+    challenge_name?: string;
+
+    // 선택한 플랜 데이터
+    plan_type: string;
+    plan_title: string;
+    description: string;
+    monthly_required: number;
+    monthly_shortfall: number;
+    final_estimated_asset: number;
+    expected_period: number;
+    plan_detail: PlanDetail;
+}
+
+export interface ChallengeResponse {
+    id: number;
+    event_name: string;
+    status: string;
+    message: string;
+    is_new: boolean;
+}
+
+export const createChallenge = async (token: string, data: CreateChallengeRequest) => {
+    const response = await api.post<ChallengeResponse>("/challenge/", data, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return response.data;
+};

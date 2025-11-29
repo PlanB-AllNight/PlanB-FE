@@ -7,7 +7,12 @@ import GoalSimulationCard from "../components/Simulation/GoalSimulationCard";
 import CustomSimulationCard, { type PlanData } from "../components/Simulation/CustomSimulationCard";
 import ChallengeCompleteSection from "../components/Simulation/ChallengeCompleteSection";
 import Button from "../components/common/Button";
-import type { SimulateResponse, Plan } from "../api/challenge";
+import { 
+    type SimulateResponse, 
+    type Plan, 
+    createChallenge, 
+    type CreateChallengeRequest 
+} from "../api/challenge";
 
 
 const SimulationResultPage = () => {
@@ -21,6 +26,7 @@ const SimulationResultPage = () => {
     
     const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null);
     const [isChallengeCreated, setIsChallengeCreated] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (!resultData) {
@@ -52,7 +58,7 @@ const SimulationResultPage = () => {
             isRecommended: plan.is_recommended,
             strategy: plan.description,
             expectedPeriod: plan.expected_period,
-            monthlySaving: plan.monthly_required || plan.monthly_saved || 0,
+            monthlySaving: plan.monthly_required || 0,
             finalAsset: plan.final_estimated_asset,
             monthlyAdditionalIncome: Math.max(0, plan.monthly_shortfall),
             comment: plan.recommendation,
@@ -70,8 +76,44 @@ const SimulationResultPage = () => {
         period: resultData.period_months || 0,
     };
 
-    const handleCreateChallenge = () => {
-        setIsChallengeCreated(true);
+    const handleCreateChallenge = async () => {
+        if (!selectedPlanId || !resultData) return;
+
+        const token = localStorage.getItem("access_token");
+        if (!token) return;
+
+        const selectedPlan = resultData.plans[selectedPlanId - 1];
+        if (!selectedPlan) return;
+
+        setIsLoading(true);
+
+        const requestData: CreateChallengeRequest = {
+            event_name: resultData.event_name,
+            target_amount: resultData.target_amount,
+            period_months: resultData.period_months,
+            current_amount: resultData.current_amount,
+
+            plan_type: selectedPlan.plan_type,
+            plan_title: selectedPlan.plan_title,
+            description: selectedPlan.description,
+
+            monthly_required: selectedPlan.monthly_required || 0,
+            monthly_shortfall: selectedPlan.monthly_shortfall,
+            final_estimated_asset: selectedPlan.final_estimated_asset,
+            expected_period: selectedPlan.expected_period,
+            plan_detail: selectedPlan.plan_detail
+        };
+
+        try {
+            await createChallenge(token, requestData);
+            setIsChallengeCreated(true);
+        } catch (error) {
+            console.error("Challenge creation failed", error);
+            alert("챌린지 생성 중 오류가 발생했습니다.");
+        } finally {
+            setIsLoading(false);
+        }
+
     };
 
     return (
@@ -110,10 +152,10 @@ const SimulationResultPage = () => {
                             <Button
                                 variant={selectedPlanId ? "primary" : "neutral"}
                                 size="md"
-                                disabled={!selectedPlanId}
+                                disabled={!selectedPlanId || isLoading}
                                 onClick={handleCreateChallenge}
                             >
-                                {selectedPlanId ? "챌린지 생성하기" : "플랜을 선택해주세요"}
+                                {isLoading ? "생성 중..." : (selectedPlanId ? "챌린지 생성하기" : "플랜을 선택해주세요")}
                             </Button>
                         </Box>
                     </ButtonWrapper>
