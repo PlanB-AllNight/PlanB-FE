@@ -38,8 +38,8 @@ const Header = () => {
                     시뮬레이션
                 </MenuItem>
                 <MenuItem
-                    active={pathname === "/info"}
-                    onClick={() => checkAndNavigate("/info")}
+                    active={pathname === "/support"}
+                    onClick={() => checkAndNavigate("/support")}
                 >지원정보/상담</MenuItem>
 
                 {isLoggedIn ? (
