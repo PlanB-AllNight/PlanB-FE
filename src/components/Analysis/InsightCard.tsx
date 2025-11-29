@@ -65,9 +65,9 @@ const Wrapper = styled.div<{ color: "blue" | "orange" | "green" | "yellow" }>`
     width: 100%;
     border-radius: 15px;
     ${({ color }) => colorStyles[color]};
-    padding: 21px 22px;
+    padding: 20px;
     display: flex;
-    gap: 15px;
+    gap: 12px;
 `;
 
 const Icon = styled.div<{ size: "lg" | "sm"; color: "blue" | "orange" | "green" | "yellow" }>`
@@ -101,4 +101,5 @@ const Description = styled.p < { color: "blue" | "orange" | "green" | "yellow"; 
     font-size: 1.7rem;
     font-weight: ${({ weight }) => weight}; 
     color: ${({ color }) => colorTokens[color]};
+    line-height: 1.2;
 `
