@@ -1,38 +1,78 @@
 import styled from "styled-components";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
+import { loginUser } from "../api/auth";
+import { useAuth } from "../context/AuthContext";
 
 const LoginPage = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
+
+    const [form, setForm] = useState({
+        userId: "",
+        password: "",
+    });
+
+    const [error, setError] = useState("");
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError("");
+
+        try {
+            const data = await loginUser(form);
+            login(data.access_token);
+            navigate("/");
+        } catch (error: any) {
+            setError(error.response?.data?.detail || "로그인 실패");
+        }
+    };
+
     return (
         <Wrapper>
             <Title>로그인</Title>
-            <Card>
-                <InputRow>
-                    <Input
-                        label="아이디"
-                        variant="primary"
-                        name="userId"
-                        height="63px"
-                    />
-                    <Input
-                        label="비밀번호"
-                        variant="primary"
-                        name="password"
-                        type="password"
-                        height="63px"
-                    />
-                </InputRow>
-                <ButtonRow>
-                    <Button variant="primary" size="md">로그인</Button>
-                    <Button
-                        variant="outline"
-                        size="md"
-                        onClick={() => navigate("/signup")}
-                    >회원가입</Button>
-                </ButtonRow>
-            </Card>
+            <form onSubmit={handleLogin}>
+                <Card>
+                    <InputRow>
+                        <Input
+                            label="아이디"
+                            variant="primary"
+                            name="userId"
+                            height="63px"
+                            value={form.userId}
+                            onChange={handleChange}
+                        />
+                        <Input
+                            label="비밀번호"
+                            variant="primary"
+                            name="password"
+                            type="password"
+                            height="63px"
+                            value={form.password}
+                            onChange={handleChange}
+                        />
+                    </InputRow>
+                    <ButtonRow>
+                        <Button
+                            variant="primary"
+                            size="md"
+                            type="submit"
+                        >로그인</Button>
+                        <Button
+                            variant="outline"
+                            size="md"
+                            onClick={() => navigate("/signup")}
+                        >회원가입</Button>
+                    </ButtonRow>
+                </Card>
+            </form>
         </Wrapper>
     )
 };

@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 interface HeroButton {
     label: string;
@@ -25,6 +26,7 @@ const HeroSection = ({
     variant = 'dark',
 }: HeroSectionProps) => {
     const navigate = useNavigate();
+    const { isLoggedIn } = useAuth();
 
     const [before, after] = highlight
         ? title.split(highlight)
@@ -32,6 +34,14 @@ const HeroSection = ({
 
     const hasButton = Boolean(secondaryButton || ghostButton);
     const sectionHeight = hasButton ? "495px" : "260px";
+
+    const checkAndNavigate = (path: string) => {
+        if (!isLoggedIn) {
+            navigate("/login");
+            return;
+        }
+        navigate(path);
+    };
 
     return (
         <Wrapper height={sectionHeight} variant={variant}>
@@ -46,7 +56,7 @@ const HeroSection = ({
                 <ButtonRow>
                     {secondaryButton && (
                         <Button
-                            onClick={() => navigate(secondaryButton.link)}
+                            onClick={() => checkAndNavigate(secondaryButton.link)}
                             variant="secondary"
                             size="md"
                         >
@@ -56,7 +66,7 @@ const HeroSection = ({
 
                     {ghostButton && (
                         <Button
-                            onClick={() => navigate(ghostButton.link)}
+                            onClick={() => checkAndNavigate(ghostButton.link)}
                             variant="ghost"
                             size="md"
                         >
@@ -74,7 +84,7 @@ export default HeroSection;
 const Wrapper = styled.div<{ height: string; variant: 'dark' | 'light' }>`
     width: 100%;
     height: ${({ height }) => height};
-    ${({ variant, theme }) => variant === 'dark' 
+    ${({ variant, theme }) => variant === 'dark'
         ? css`background: linear-gradient(90deg, #0F766E 40%, #05956A 100%);`
         : css`background-color: ${theme.colors.primary[100]};`
     }
@@ -88,7 +98,7 @@ const Wrapper = styled.div<{ height: string; variant: 'dark' | 'light' }>`
 const Title = styled.h1<{ variant: 'dark' | 'light' }>`
     font-size: 3.6rem;
     font-weight: ${({ theme }) => theme.font.weight.bold};
-    color: ${({ variant, theme }) => 
+    color: ${({ variant, theme }) =>
         variant === 'dark' ? 'white' : theme.colors.fontPrimary
     };
 `;
@@ -100,7 +110,7 @@ const Highlight = styled.span`
 const Description = styled.p<{ variant: 'dark' | 'light' }>`
     font-size: 2rem;
     font-weight: ${({ theme }) => theme.font.weight.regular};
-    color: ${({ variant, theme }) => 
+    color: ${({ variant, theme }) =>
         variant === 'dark' ? theme.colors.gray : theme.colors.fontSecondary
     };
     line-height: 1.4;

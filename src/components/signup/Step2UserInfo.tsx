@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 import Input from "../common/Input";
 import Button from "../common/Button";
+import { registerUser } from "../../api/auth";
 
 interface Step2Props {
     onPrev: () => void;
@@ -118,9 +119,18 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
         return !hasError && allFilled;
     };
 
-    const handleNext = () => {
-        if (!isFormValid()) return;
-        onNext();
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!isFormValid) return;
+
+        try {
+            await registerUser(form);
+            console.log("회원가입이 완료되었습니다.");
+            onNext();
+        } catch (error: any) {
+            alert(error.response?.data?.detail || "회원가입 실패!");
+        }
     };
 
     return (
@@ -209,9 +219,9 @@ const Step2UserInfo = ({ onPrev, onNext }: Step2Props) => {
                 <Button
                     variant="primary"
                     size="sm"
-                    onClick={handleNext}
+                    onClick={handleSubmit}
                     disabled={!isFormValid()}
-                >다음</Button>
+                >회원가입</Button>
             </ButtonRow>
         </Wrapper>
     );
