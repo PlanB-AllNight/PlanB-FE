@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useState, useRef, useEffect } from "react";
 import Button from "../common/Button";
 import Input from "../common/Input";
@@ -9,11 +9,23 @@ import AiIcon from "../../assets/svgs/ai.svg?react";
 import TrustIcon from "../../assets/svgs/trust.svg?react";
 import SendIcon from "../../assets/svgs/send.svg?react";
 
+interface Message {
+    type: 'bot' | 'user';
+    text: string;
+    buttons?: string[];
+}
+
 const ChatbotSection = () => {
     const [msg, setMsg] = useState("");
-    const [history, setHistory] = useState([
-        { type: 'bot', text: '안녕하세요! \n금융이나 정책 관련해서 궁금한 점이 있으신가요? \nAI 상담원에게 물어보세요!' }
+    const [history, setHistory] = useState<Message[]>([
+        { 
+            type: 'bot', 
+            text: '안녕하세요! PlanB 챗봇입니다 \n금융이나 정책 관련해서 궁금한 점이 있으신가요?',
+            buttons: ["장학금 문의", "월세 지원", "학자금 대출", "생활비 도움"] 
+        }
     ]);
+    const [isLoading, setIsLoading] = useState(false);
+
     const scrollRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -22,19 +34,35 @@ const ChatbotSection = () => {
         }
     }, [history]);
 
-    const handleSend = () => {
-        if (!msg.trim()) return;
+    const handleSend = (textOverride?: string) => {
+        const targetMsg = (typeof textOverride === 'string' ? textOverride : msg).trim();
         
-        const userMsg = msg;
-        setHistory(prev => [...prev, { type: 'user', text: userMsg }]);
+        if (!targetMsg || isLoading) return;
+        
         setMsg("");
+        setIsLoading(true);
+
+        setHistory(prev => [...prev, { type: 'user', text: targetMsg }]);
 
         setTimeout(() => {
-            setHistory(prev => [...prev, { 
+             setHistory(prev => [...prev, { 
                 type: 'bot', 
-                text: `"${userMsg}"에 대한 정보를 찾고 있습니다...\n잠시만 기다려주세요.` 
+                text: '정보를 찾고 있습니다...' 
             }]);
-        }, 800);
+        }, 300);
+
+        setTimeout(() => {
+            // TODO: 백엔드 API 호출 결과
+            const mockResponse = `"${targetMsg}"에 대한 정책 검색 결과입니다.\n신청 기간은 ~12/31까지이며, 자세한 내용은 공지사항을 참조하세요.`;
+            
+            setHistory(prev => {
+                const newHistory = [...prev];
+                newHistory.pop();
+                return [...newHistory, { type: 'bot', text: mockResponse }];
+            });
+            
+            setIsLoading(false);
+        }, 2000);
     };
 
     return (
@@ -84,28 +112,60 @@ const ChatbotSection = () => {
                 <ChatHeader>AICC 금융상담 챗봇</ChatHeader>
                 <MsgArea ref={scrollRef}>
                     {history.map((m, i) => (
-                        <BubbleRow key={i} isUser={m.type === 'user'}>
-                            <Bubble isUser={m.type === 'user'}>{m.text}</Bubble>
-                        </BubbleRow>
+                        <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: m.type === 'user' ? 'flex-end' : 'flex-start', marginTop: (i > 0 && m.type === 'user') ? '20px' : '0' }}>
+                            <BubbleRow isUser={m.type === 'user'}>
+                                {m.type === 'bot' && <Avatar>🤖</Avatar>}
+                                <Bubble isUser={m.type === 'user'} hasButtons={m.type === 'bot' && !!m.buttons}>
+                                    {m.text}
+                                    {m.type === 'bot' && m.buttons && (
+                                        <BotButtonWrapper>
+                                            {m.buttons.map((btnText, idx) => (
+                                                <BotChip 
+                                                    key={idx} 
+                                                    onClick={() => handleSend(btnText)}
+                                                    disabled={isLoading}
+                                                >
+                                                    {btnText}
+                                                </BotChip>
+                                            ))}
+                                        </BotButtonWrapper>
+                                    )}
+                                </Bubble>
+                            </BubbleRow>
+                        </div>
                     ))}
+                    {isLoading && (
+                        <BubbleRow isUser={false}>
+                            <Avatar>🤖</Avatar>
+                            <Bubble isUser={false}>
+                                <LoadingContainer>
+                                    <Dot />
+                                    <Dot />
+                                    <Dot />
+                                </LoadingContainer>
+                            </Bubble>
+                        </BubbleRow>
+                    )}
                 </MsgArea>
                 <InputArea>
                     <InputWrapper>
                         <Input 
-                            placeholder="질문을 입력하세요..." 
+                            placeholder={isLoading ? "답변을 생성 중입니다..." : "질문을 입력하세요..."}
                             value={msg} 
                             onChange={e => setMsg(e.target.value)}
-                            onKeyDown={e => e.key === 'Enter' && handleSend()}
+                            onKeyDown={e => e.key === 'Enter' && !isLoading && handleSend()}
                             height="50px"
                             style={{fontSize: '1.6rem'}}
                             variant="gray"
+                            disabled={isLoading}
                         />
                     </InputWrapper>
                     <Button 
                         variant="primary" 
                         size="sm" 
-                        onClick={handleSend}
+                        onClick={() => handleSend()}
                         style={{width: '70px', padding: '0'}}
+                        disabled={isLoading}
                     >
                         <SendIcon width="30" height="30" />
                     </Button>
@@ -179,6 +239,7 @@ const ChatWrapper = styled.div`
     overflow: hidden;
     background: white;
     box-shadow: 0 4px 12px rgba(0,0,0,0.11);
+    height: 625px;
 `;
 
 const ChatHeader = styled.div`
@@ -202,21 +263,74 @@ const MsgArea = styled.div`
 const BubbleRow = styled.div<{isUser:boolean}>`
     display: flex; 
     justify-content: ${({isUser})=>isUser?'flex-end':'flex-start'};
+    width: 100%;
+    align-items: flex-start;
 `;
 
-const Bubble = styled.div<{isUser:boolean}>`
+const Avatar = styled.div`
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin-right: 10px;
+    flex-shrink: 0;
+`;
+
+const Bubble = styled.div<{isUser:boolean; hasButtons?: boolean}>`
     padding: 12px 18px;
     border-radius: 18px;
     border-top-left-radius: ${({isUser})=>isUser?'18px':'4px'};
     border-top-right-radius: ${({isUser})=>isUser?'4px':'18px'};
-    max-width: 80%;
+    max-width: ${({hasButtons}) => hasButtons ? '95%' : '80%'};
+    word-break: break-word;
+    overflow-wrap: break-word;
     font-size: 1.5rem;
     line-height: 1.5;
-    white-space: pre-line;
+    white-space: pre-wrap;
     
     background: ${({isUser, theme}) => isUser ? theme.colors.primary[500] : 'white'};
     color: ${({isUser}) => isUser ? 'white' : '#374151'};
     box-shadow: ${({isUser}) => isUser ? 'none' : '0 1px 2px rgba(0,0,0,0.1)'};
+`;
+
+const BotButtonWrapper = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    
+    margin-top: 16px; 
+`;
+
+const BotChip = styled.button`
+    padding: 4px 12px;
+    border-radius: 16px;
+    background-color: white;
+    
+    border: 1px solid ${({theme}) => theme.colors.primary[200]}; 
+    color: ${({theme}) => theme.colors.primary[500]};
+    
+    font-size: 1.3rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+
+    &:hover {
+        background-color: ${({theme}) => theme.colors.primary[100]};
+        border-color: ${({theme}) => theme.colors.primary[500]};
+        transform: translateY(-1px);
+    }
+    
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
 `;
 
 const InputArea = styled.div`
@@ -230,4 +344,39 @@ const InputArea = styled.div`
 
 const InputWrapper = styled.div`
     flex: 1;
+`;
+
+const bounce = keyframes`
+  0%, 60%, 100% { 
+    transform: translateY(0); 
+  }
+  30% { 
+    transform: translateY(-4px); 
+  }
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 24px;
+`;
+
+const Dot = styled.div`
+  width: 6px;
+  height: 6px;
+  background-color: #b0b0b0;
+  border-radius: 50%;
+  animation: ${bounce} 1.4s infinite ease-in-out both;
+
+  &:nth-child(1) {
+    animation-delay: -0.32s;
+  }
+  &:nth-child(2) {
+    animation-delay: -0.16s;
+  }
+  &:nth-child(3) {
+    animation-delay: 0s;
+  }
 `;
