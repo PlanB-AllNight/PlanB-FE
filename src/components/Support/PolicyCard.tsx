@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Button from "../common/Button";
-import { type Policy } from "../../pages/SupportPage";
+import type { Policy } from "../../pages/SupportPage";
 
 interface Props {
   policy: Policy;
@@ -16,6 +16,10 @@ const PolicyCard = ({ policy, onClick }: Props) => {
       <Desc>{policy.description}</Desc>
 
       <InfoBox>
+        <InfoRow>
+          <Label>신청 기간:</Label>
+          <Value>{policy.supporter}</Value>
+        </InfoRow>
         <InfoRow>
           <Label>신청 기간:</Label>
           <Value>{policy.period}</Value>
