@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
@@ -16,6 +16,15 @@ import HouseIcon from "../assets/svgs/house.svg?react";
 import MarriageIcon from "../assets/svgs/marriage.svg?react";
 import AddCircleIcon from "../assets/svgs/add-circle.svg?react";
 
+interface ChallengeInitResponse {
+    current_asset: number;
+    monthly_save_potential: number;
+    has_analysis: boolean;
+    last_analysis_date: string;
+    latest_mydata_date: string;
+    analysis_outdated: boolean;
+}
+
 const EVENTS = [
     { id: 1, title: "교환학생", description: "해외 대학에서 한 학기 이상 교류 학습을 준비", amount: "10000000", period: "12", icon: <GlobalIcon width="51" height="51" /> },
     { id: 2, title: "해외여행", description: "꿈꿔왔던 해외여행을 현실로 만들기", amount: "6000000", period: "6", icon: <FlightIcon width="51" height="51" /> },
@@ -29,16 +38,69 @@ const SimulationPage = () => {
     const navigate = useNavigate();
     const goalFormRef = useRef<HTMLDivElement>(null);
 
-    const [currentAssets, setCurrentAssets] = useState("500000");
+    const [currentAssets, setCurrentAssets] = useState("0");
+    const [monthlySavePotential, setMonthlySavePotential] = useState(0);
+
+    const [modalStatus, setModalStatus] = useState<'none' | 'missing' | 'outdated'>('none');
+
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
     const [isCustomMode, setIsCustomMode] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [goalData, setGoalData] = useState<{ title: string; amount: string; period: string } | null>(null);
 
+    useEffect(() => {
+        const fetchInitData = async () => {
+            try {
+                // 실제 API 호출 (토큰이 있다고 가정)
+                // const token = localStorage.getItem('accessToken');
+                // const response = await fetch('/api/challenge/init', {
+                //     headers: { Authorization: `Bearer ${token}` }
+                // });
+                // const data: ChallengeInitResponse = await response.json();
+
+                // [테스트용 MOCK DATA] - 상황에 따라 주석을 해제하여 테스트해보세요.
+                
+                // Case 1: 정상 (분석 있고 최신임)
+                const data: ChallengeInitResponse = { current_asset: 1500000, monthly_save_potential: 300000, has_analysis: true, last_analysis_date: "2024-11-30", latest_mydata_date: "2024-11-30", analysis_outdated: false };
+                
+                // Case 2: 분석 데이터 없음
+                // const data: ChallengeInitResponse = { current_asset: 0, monthly_save_potential: 0, has_analysis: false, last_analysis_date: "", latest_mydata_date: "", analysis_outdated: false };
+
+                // Case 3: 분석 데이터 있지만 구버전 (Outdated)
+                // const data: ChallengeInitResponse = { 
+                //     current_asset: 1200000, 
+                //     monthly_save_potential: 250000, 
+                //     has_analysis: true, 
+                //     last_analysis_date: "2024-10-01", 
+                //     latest_mydata_date: "2024-11-30", 
+                //     analysis_outdated: true 
+                // };
+
+                // 로직 처리
+                if (!data.has_analysis) {
+                    setModalStatus('missing');
+                } else {
+                    // 자산 세팅
+                    setCurrentAssets(data.current_asset.toString());
+                    setMonthlySavePotential(data.monthly_save_potential);
+
+                    if (data.analysis_outdated) {
+                        setModalStatus('outdated');
+                    }
+                }
+
+            } catch (error) {
+                console.error("Failed to fetch init data", error);
+                // 에러 처리 로직 (예: 토스트 메시지)
+            }
+        };
+
+        fetchInitData();
+    }, []);
+
     const handleAssetsEdit = (newAmount: string) => {
         setCurrentAssets(newAmount);
-        console.log('자산 변경:', newAmount);
     };
 
     const scrollToGoalForm = () => {
@@ -176,6 +238,42 @@ const SimulationPage = () => {
                     )}
                 </Container>
             </Content>
+
+            {modalStatus === 'missing' && (
+                <ModalBackdrop>
+                    <ModalBox>
+                        <ModalTitle>소비 분석이 필요해요 🧐</ModalTitle>
+                        <ModalDesc>
+                            정확한 시뮬레이션을 위해 먼저 소비 패턴을 분석해야 합니다.<br/>
+                            분석 페이지로 이동하시겠습니까?
+                        </ModalDesc>
+                        <ModalButtonRow>
+                            <Button onClick={() => navigate('/analysis')}>
+                                소비 분석 하러가기
+                            </Button>
+                        </ModalButtonRow>
+                    </ModalBox>
+                </ModalBackdrop>
+            )}
+            {modalStatus === 'outdated' && (
+                <ModalBackdrop>
+                    <ModalBox>
+                        <ModalTitle>데이터 업데이트 알림 🔔</ModalTitle>
+                        <ModalDesc>
+                            최신 금융 데이터가 반영되지 않았습니다.<br/>
+                            더 정확한 추천을 위해 분석을 갱신하시겠습니까?
+                        </ModalDesc>
+                        <ModalButtonRow>
+                            <Button variant="gray" onClick={() => setModalStatus('none')}>
+                                그냥 진행하기
+                            </Button>
+                            <Button onClick={() => navigate('/analysis')}>
+                                분석 갱신하기
+                            </Button>
+                        </ModalButtonRow>
+                    </ModalBox>
+                </ModalBackdrop>
+            )}
         </Wrapper>
     );
 };
@@ -320,4 +418,59 @@ const AnimatedWrapper = styled.div<{ isVisible: boolean }>`
     opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
     transform: translateY(${({ isVisible }) => (isVisible ? '0' : '20px')});
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+`;
+
+// --- Modal Components ---
+const ModalBackdrop = styled.div`
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+`;
+
+const ModalBox = styled.div`
+    width: 450px;
+    background: white;
+    padding: 40px 30px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    animation: slideUp 0.3s ease-out;
+
+    @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+`;
+
+const ModalTitle = styled.h3`
+    font-size: 2.2rem;
+    font-weight: ${({ theme }) => theme.font.weight.bold};
+    margin-bottom: 16px;
+    color: ${({ theme }) => theme.colors.fontPrimary};
+`;
+
+const ModalDesc = styled.p`
+    font-size: 1.6rem;
+    color: ${({ theme }) => theme.colors.fontSecondary};
+    line-height: 1.5;
+    margin-bottom: 30px;
+`;
+
+const ModalButtonRow = styled.div`
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    
+    > button {
+        flex: 1;
+        font-size: 1.6rem;
+    }
 `;
