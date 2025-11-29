@@ -5,7 +5,7 @@ import Input from "../common/Input";
 
 import LookIcon from "../../assets/svgs/look.svg?react";
 import DbIcon from "../../assets/svgs/db.svg?react";
-import AiIcon from "../../assets/svgs/ai.svg?react";
+import AiIcon from "../../assets/svgs/brain.svg?react";
 import TrustIcon from "../../assets/svgs/trust.svg?react";
 import SendIcon from "../../assets/svgs/send.svg?react";
 
