@@ -5,19 +5,28 @@ import HeroSection from "../components/common/HeroSection";
 import Button from "../components/common/Button";
 import DataIcon from "../assets/svgs/data.svg?react";
 
+import { analyzeSpending } from "../api/spending";
+
 const AnalysisStartPage = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleStart = () => {
-        setLoading(true);
+    const handleStart = async () => {
+        try {
+            setLoading(true);
 
-        // 임시 API 대기 시뮬레이션 (2초)
-        setTimeout(() => {
+            const result = await analyzeSpending();
+
             setLoading(false);
-            // 분석 완료 후 결과 페이지로 이동
-            navigate("/analysis/result");
-        }, 2000);
+
+            navigate("/analysis/result", {
+                state: { analysisResult: result }
+            });
+        } catch (error: any) {
+            console.error(error);
+            setLoading(false);
+            alert(error.response?.data?.detail || "소비 분석에 실패했습니다.");
+        }
     };
 
     return (

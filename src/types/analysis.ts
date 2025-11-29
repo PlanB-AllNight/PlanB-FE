@@ -9,7 +9,6 @@ export interface AnalysisResult {
     summary: {
         totalIncome: number;        // 총 수입
         totalSpending: number;      // 총 지출
-        spendingRate: number;       // 전체 수입 대비 지출 비율 %
         possibleSaving: number;     // 저축 가능 금액
     };
 
