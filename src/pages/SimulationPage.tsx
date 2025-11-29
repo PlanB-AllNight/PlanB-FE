@@ -1,9 +1,14 @@
 import { useState, useRef, useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 
-import { getChallengeInit, type ChallengeInitResponse } from "../api/challenge";
+import { 
+    getChallengeInit, 
+    postChallengeSimulate,
+    type ChallengeInitResponse, 
+    type SimulateRequest 
+} from "../api/challenge";
 
 import HeroSection from "../components/common/HeroSection";
 import CurrentAssetsCard from "../components/Simulation/CurrentAssetsCard";
@@ -37,6 +42,7 @@ const SimulationPage = () => {
     const [monthlySavePotential, setMonthlySavePotential] = useState(0);
 
     const [modalStatus, setModalStatus] = useState<'none' | 'missing' | 'outdated'>('none');
+    const [isLoading, setIsLoading] = useState(false);
 
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
     const [isCustomMode, setIsCustomMode] = useState(false);
@@ -130,6 +136,45 @@ const SimulationPage = () => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     };
 
+    const handleSimulate = async () => {
+        if (!goalData) return;
+
+        const token = localStorage.getItem("access_token");
+        if (!token) return; 
+
+        setIsLoading(true);
+
+        const requestBody: SimulateRequest = {
+            event_name: goalData.title,
+            target_amount: parseInt(goalData.amount),
+            period: parseInt(goalData.period),
+            current_asset: parseInt(currentAssets),
+            monthly_save_potential: monthlySavePotential
+        };
+
+        try {
+            const response = await postChallengeSimulate(token, requestBody);
+            
+            navigate('/result', { 
+                state: { 
+                    result: response,
+                    goal: {
+                        name: goalData.title,
+                        targetAmount: requestBody.target_amount,
+                        period: requestBody.period,
+                        currentAmount: requestBody.current_asset
+                    }
+                } 
+            });
+
+        } catch (error) {
+            console.error("Simulation failed", error);
+            alert("시뮬레이션 중 오류가 발생했습니다.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const selectedEventData = EVENTS.find(e => e.id === selectedEventId);
 
     return (
@@ -205,10 +250,17 @@ const SimulationPage = () => {
                                         <Button
                                             variant={isConfirmed ? "secondary" : "neutral"}
                                             size="md"
-                                            disabled={!isConfirmed}
-                                            onClick={() => navigate('/result')}
+                                            disabled={!isConfirmed || isLoading}
+                                            onClick={handleSimulate}
                                         >
-                                            {isConfirmed ? "시뮬레이션하기" : "목표를 설정해주세요"}
+                                            {isLoading ? (
+                                                <LoadingWrapper>
+                                                    <Spinner />
+                                                    <span>AI 플랜 생성중...</span>
+                                                </LoadingWrapper>
+                                            ) : (
+                                                isConfirmed ? "시뮬레이션하기" : "목표를 설정해주세요"
+                                            )}
                                         </Button>
                                     </BottomButtonWrapper>
                                 </BottomSection>
@@ -452,4 +504,25 @@ const ModalButtonRow = styled.div`
         flex: 1;
         font-size: 1.6rem;
     }
+`;
+
+const LoadingWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+`;
+
+const spin = keyframes`
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+`;
+
+const Spinner = styled.div`
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    animation: ${spin} 1s linear infinite;
 `;
