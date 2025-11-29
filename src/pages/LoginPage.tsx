@@ -31,7 +31,9 @@ const LoginPage = () => {
             login(data.access_token);
             navigate("/");
         } catch (error: any) {
-            setError(error.response?.data?.detail || "로그인 실패");
+            const message = error.response?.data?.detail || "로그인 실패!";
+            alert(message);
+            setError(message);
         }
     };
 
