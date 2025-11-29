@@ -7,6 +7,15 @@ const Header = () => {
     const { isLoggedIn } = useAuth();
     const navigate = useNavigate();
 
+    const checkAndNavigate = (path: string) => {
+        if (!isLoggedIn) {
+            // alert("로그인 후 이용 가능합니다.");
+            navigate("/login", { state: { from: path } });
+            return;
+        }
+        navigate(path);
+    };
+
     return (
         <Container>
             <Logo to="/">PlanB</Logo>
@@ -18,19 +27,19 @@ const Header = () => {
                 >홈</MenuItem>
                 <MenuItem
                     active={pathname.startsWith("/analysis") || pathname.startsWith("/budget")}
-                    onClick={() => navigate("/analysis")}
+                    onClick={() => checkAndNavigate("/analysis")}
                 >
                     소비분석
                 </MenuItem>
                 <MenuItem
                     active={pathname === "/simulate" || pathname === "/result"}
-                    onClick={() => navigate("/simulate")}
+                    onClick={() => checkAndNavigate("/simulate")}
                 >
                     시뮬레이션
                 </MenuItem>
                 <MenuItem
                     active={pathname === "/support"}
-                    onClick={() => navigate("/support")}
+                    onClick={() => checkAndNavigate("/support")}
                 >지원정보/상담</MenuItem>
 
                 {isLoggedIn ? (
