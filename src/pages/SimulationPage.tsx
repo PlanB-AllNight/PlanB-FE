@@ -58,10 +58,10 @@ const SimulationPage = () => {
             try {
                 const data: ChallengeInitResponse = await getChallengeInit(token);
 
-                if (!data.has_analysis) {
-                    setModalStatus('missing');
-                    return;
-                } 
+                // if (!data.has_analysis) {
+                //     setModalStatus('missing');
+                //     return;
+                // } 
 
                 setCurrentAssets(data.current_asset.toString());
                 setMonthlySavePotential(data.monthly_save_potential);
@@ -146,9 +146,9 @@ const SimulationPage = () => {
 
         const requestBody: SimulateRequest = {
             event_name: goalData.title,
-            target_amount: parseInt(goalData.amount),
+            target_amount: parseInt(goalData.amount.replace(/,/g, '')),
             period: parseInt(goalData.period),
-            current_asset: parseInt(currentAssets),
+            current_asset: parseInt(currentAssets.replace(/,/g, '')) || 0,
             monthly_save_potential: monthlySavePotential
         };
 
