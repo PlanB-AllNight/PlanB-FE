@@ -1,60 +1,20 @@
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import type { AnalysisResult } from "../types/analysis";
 import HeroSection from "../components/common/HeroSection";
 import CategorySection from "../components/Analysis/CategorySection";
 import AiInsightSection from "../components/Analysis/AiInsightSection";
 import Button from "../components/common/Button";
-
-const mockAnalysisData: AnalysisResult = {
-    summary: {
-        totalIncome: 1500000,
-        totalSpending: 212670,
-        spendingRate: 44,
-        possibleSaving: 1287330,
-    },
-
-    categories: [
-        { name: "식사", ratio: 18.2, amount: 245000, count: 42 },
-        { name: "카페/디저트", ratio: 12.5, amount: 169000, count: 27 },
-        { name: "쇼핑/패션", ratio: 15.4, amount: 208000, count: 12 },
-        { name: "취미/여가", ratio: 7.8, amount: 106000, count: 9 },
-        { name: "사회/모임", ratio: 6.5, amount: 88000, count: 7 },
-        { name: "교통", ratio: 4.2, amount: 57000, count: 21 },
-        { name: "통신/구독", ratio: 3.9, amount: 53000, count: 3 },
-        { name: "데이트", ratio: 5.1, amount: 69000, count: 6 },
-        { name: "여행", ratio: 9.0, amount: 122000, count: 4 },
-        { name: "교육/학습", ratio: 4.8, amount: 65000, count: 5 },
-        { name: "주거", ratio: 4.1, amount: 56000, count: 2 },
-        { name: "반려동물", ratio: 2.4, amount: 33000, count: 3 },
-        { name: "건강/의료", ratio: 3.2, amount: 43000, count: 1 },
-        { name: "특별지출(등록금/장학금)", ratio: 1.4, amount: 19000, count: 1 },
-    ],
-
-    insights: {
-        highestCategory: "쇼핑/잡화",
-        overspendingCategory: "쇼핑/잡화 (전체 지출의 20% 이상)",
-        suggestions: "카페 지출을 10% 줄이면 월 2,370원 절약 가능",
-    },
-
-    aiAnalysis: {
-        findings: [
-            "총 지출의 35%가 ‘식사’ 항목에서 발생했습니다.",
-            "‘카페/디저트’에서 월 22회 결제하여 지출 빈도가 가장 높습니다.",
-            "지난 9월 대비 ‘사회/모임’ 지출이 40%(+5만원) 증가했습니다.",
-            "월 저축 가능액은 약 30만원으로 분석됩니다.",
-        ],
-        suggestions: [
-            "식사 카테고리에서 비중을 10% 줄이고 배달을 줄이세요.",
-            "카페/디저트 예산을 월 10만원으로 설정하여 추가 지출을 방지하세요.",
-            "‘사회/모임’ 지출 패턴을 기록하고 다음 달은 10만원 이하로 설정해보세요.",
-        ],
-    },
-};
+import { mapAnalysisResponse } from "../utils/analysisMapper";
 
 const AnalysisPage = () => {
-    const data = mockAnalysisData;
     const navigate = useNavigate();
+    const location = useLocation();
+    const rawData = location.state?.analysisResult;
+
+    if (!rawData) return <div>데이터가 없습니다.</div>
+
+    const data = mapAnalysisResponse(rawData);
 
     return (
         <Wrapper>
