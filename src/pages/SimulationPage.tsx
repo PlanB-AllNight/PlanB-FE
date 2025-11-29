@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+
+import { getChallengeInit, type ChallengeInitResponse } from "../api/challenge";
 
 import HeroSection from "../components/common/HeroSection";
 import CurrentAssetsCard from "../components/Simulation/CurrentAssetsCard";
@@ -16,14 +19,6 @@ import HouseIcon from "../assets/svgs/house.svg?react";
 import MarriageIcon from "../assets/svgs/marriage.svg?react";
 import AddCircleIcon from "../assets/svgs/add-circle.svg?react";
 
-interface ChallengeInitResponse {
-    current_asset: number;
-    monthly_save_potential: number;
-    has_analysis: boolean;
-    last_analysis_date: string;
-    latest_mydata_date: string;
-    analysis_outdated: boolean;
-}
 
 const EVENTS = [
     { id: 1, title: "교환학생", description: "해외 대학에서 한 학기 이상 교류 학습을 준비", amount: "10000000", period: "12", icon: <GlobalIcon width="51" height="51" /> },
@@ -51,53 +46,38 @@ const SimulationPage = () => {
 
     useEffect(() => {
         const fetchInitData = async () => {
+            const token = localStorage.getItem("access_token");
+            if (!token) return;
+
             try {
-                // 실제 API 호출 (토큰이 있다고 가정)
-                // const token = localStorage.getItem('accessToken');
-                // const response = await fetch('/api/challenge/init', {
-                //     headers: { Authorization: `Bearer ${token}` }
-                // });
-                // const data: ChallengeInitResponse = await response.json();
+                const data: ChallengeInitResponse = await getChallengeInit(token);
 
-                // [테스트용 MOCK DATA] - 상황에 따라 주석을 해제하여 테스트해보세요.
-                
-                // Case 1: 정상 (분석 있고 최신임)
-                const data: ChallengeInitResponse = { current_asset: 1500000, monthly_save_potential: 300000, has_analysis: true, last_analysis_date: "2024-11-30", latest_mydata_date: "2024-11-30", analysis_outdated: false };
-                
-                // Case 2: 분석 데이터 없음
-                // const data: ChallengeInitResponse = { current_asset: 0, monthly_save_potential: 0, has_analysis: false, last_analysis_date: "", latest_mydata_date: "", analysis_outdated: false };
-
-                // Case 3: 분석 데이터 있지만 구버전 (Outdated)
-                // const data: ChallengeInitResponse = { 
-                //     current_asset: 1200000, 
-                //     monthly_save_potential: 250000, 
-                //     has_analysis: true, 
-                //     last_analysis_date: "2024-10-01", 
-                //     latest_mydata_date: "2024-11-30", 
-                //     analysis_outdated: true 
-                // };
-
-                // 로직 처리
                 if (!data.has_analysis) {
                     setModalStatus('missing');
-                } else {
-                    // 자산 세팅
-                    setCurrentAssets(data.current_asset.toString());
-                    setMonthlySavePotential(data.monthly_save_potential);
+                    return;
+                } 
 
-                    if (data.analysis_outdated) {
-                        setModalStatus('outdated');
-                    }
+                setCurrentAssets(data.current_asset.toString());
+                setMonthlySavePotential(data.monthly_save_potential);
+
+                if (data.analysis_outdated) {
+                    setModalStatus('outdated');
                 }
 
             } catch (error) {
-                console.error("Failed to fetch init data", error);
-                // 에러 처리 로직 (예: 토스트 메시지)
+                const axiosError = error as AxiosError;
+                console.error("Failed to fetch init data", axiosError);
+
+                if (axiosError.response && axiosError.response.status === 401) {
+                    alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+                    localStorage.removeItem("access_token");
+                    navigate("/login");
+                }
             }
         };
 
         fetchInitData();
-    }, []);
+    }, [navigate]);
 
     const handleAssetsEdit = (newAmount: string) => {
         setCurrentAssets(newAmount);
@@ -163,7 +143,6 @@ const SimulationPage = () => {
             <Content>
                 <Container>
                     <CurrentAssetsCard 
-                        // TODO: 소비 분석 값 가져오기
                         amount={currentAssets}
                         onEdit={handleAssetsEdit}
                     />
