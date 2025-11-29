@@ -22,7 +22,13 @@ const Header = () => {
                 >
                     시뮬레이션
                 </MenuItem>
-                <MenuItem to="/info" active={pathname === "/info"}>지원정보/상담</MenuItem>
+                <MenuItem 
+                    to="/support" 
+                    active={pathname === "/support" || pathname === "/info"}
+                >
+                    지원정보/상담
+                </MenuItem>
+    
                 <MenuItem to="/mypage" active={pathname === "/mypage"}>마이페이지</MenuItem>
             </MenuList>
         </Container>

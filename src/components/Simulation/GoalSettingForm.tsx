@@ -21,18 +21,22 @@ const GoalSettingForm = ({ isCustom, defaultValues, onConfirm }: GoalSettingForm
         period: "",
     });
 
+    const defaultTitle = defaultValues?.title;
+    const defaultAmount = defaultValues?.amount;
+    const defaultPeriod = defaultValues?.period;
+
     // 선택된 이벤트가 바뀌거나 모드가 바뀔 때 초기값 세팅
     useEffect(() => {
         if (isCustom) {
             setValues({ title: "", amount: "", period: "" });
-        } else if (defaultValues) {
+        } else if (defaultTitle !== undefined && defaultAmount !== undefined && defaultPeriod !== undefined) {
             setValues({
-                title: defaultValues.title,
-                amount: defaultValues.amount.replace(/[^0-9]/g, ""),
-                period: defaultValues.period.replace(/[^0-9]/g, ""),
+                title: defaultTitle,
+                amount: defaultAmount.replace(/[^0-9]/g, ""),
+                period: defaultPeriod.replace(/[^0-9]/g, ""),
             });
         }
-    }, [isCustom, defaultValues?.title, defaultValues?.amount, defaultValues?.period]);
+    }, [isCustom, defaultTitle, defaultAmount, defaultPeriod]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
