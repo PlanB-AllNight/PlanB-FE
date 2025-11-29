@@ -9,8 +9,8 @@ const Header = () => {
 
     const checkAndNavigate = (path: string) => {
         if (!isLoggedIn) {
-            alert("로그인 후 이용 가능합니다.");
-            navigate("/login");
+            // alert("로그인 후 이용 가능합니다.");
+            navigate("/login", { state: { from: path } });
             return;
         }
         navigate(path);

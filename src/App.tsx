@@ -11,6 +11,7 @@ import SimulationResultPage from './pages/SimulationResultPage';
 import BudgetPage from "./pages/BudgetPage";
 import AnalysisPage from "./pages/AnalysisPage";
 import AnalysisStartPage from "./pages/AnalysisStartPage";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
@@ -22,13 +23,16 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/simulate" element={<SimulationPage />} />
-        <Route path="/support" element={<SupportPage />} />
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/result" element={<SimulationResultPage />} />
-        <Route path="/budget" element={<BudgetPage />} />
-        <Route path="/analysis/result" element={<AnalysisPage />} />
-        <Route path="/analysis" element={<AnalysisStartPage />} />
+
+        <Route element={<PrivateRoute />}>
+            <Route path="/simulate" element={<SimulationPage />} />
+            <Route path="/support" element={<SupportPage />} />
+            <Route path="/mypage" element={<MyPage />} />
+            <Route path="/result" element={<SimulationResultPage />} />
+            <Route path="/budget" element={<BudgetPage />} />
+            <Route path="/analysis" element={<AnalysisStartPage />} />
+            <Route path="/analysis/result" element={<AnalysisPage />} />
+        </Route>
       </Routes>
     </>
   );

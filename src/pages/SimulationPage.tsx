@@ -1,6 +1,14 @@
-import { useState, useRef } from "react";
-import styled from "styled-components";
+import { useState, useRef, useEffect } from "react";
+import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+
+import { 
+    getChallengeInit, 
+    postChallengeSimulate,
+    type ChallengeInitResponse, 
+    type SimulateRequest 
+} from "../api/challenge";
 
 import HeroSection from "../components/common/HeroSection";
 import CurrentAssetsCard from "../components/Simulation/CurrentAssetsCard";
@@ -16,6 +24,7 @@ import HouseIcon from "../assets/svgs/house.svg?react";
 import MarriageIcon from "../assets/svgs/marriage.svg?react";
 import AddCircleIcon from "../assets/svgs/add-circle.svg?react";
 
+
 const EVENTS = [
     { id: 1, title: "교환학생", description: "해외 대학에서 한 학기 이상 교류 학습을 준비", amount: "10000000", period: "12", icon: <GlobalIcon width="51" height="51" /> },
     { id: 2, title: "해외여행", description: "꿈꿔왔던 해외여행을 현실로 만들기", amount: "6000000", period: "6", icon: <FlightIcon width="51" height="51" /> },
@@ -29,16 +38,55 @@ const SimulationPage = () => {
     const navigate = useNavigate();
     const goalFormRef = useRef<HTMLDivElement>(null);
 
-    const [currentAssets, setCurrentAssets] = useState("500000");
+    const [currentAssets, setCurrentAssets] = useState("0");
+    const [monthlySavePotential, setMonthlySavePotential] = useState(0);
+
+    const [modalStatus, setModalStatus] = useState<'none' | 'missing' | 'outdated'>('none');
+    const [isLoading, setIsLoading] = useState(false);
+
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
     const [isCustomMode, setIsCustomMode] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [goalData, setGoalData] = useState<{ title: string; amount: string; period: string } | null>(null);
 
+    useEffect(() => {
+        const fetchInitData = async () => {
+            const token = localStorage.getItem("access_token");
+            if (!token) return;
+
+            try {
+                const data: ChallengeInitResponse = await getChallengeInit(token);
+
+                if (!data.has_analysis) {
+                    setModalStatus('missing');
+                    return;
+                } 
+
+                setCurrentAssets(data.current_asset.toString());
+                setMonthlySavePotential(data.monthly_save_potential);
+
+                if (data.analysis_outdated) {
+                    setModalStatus('outdated');
+                }
+
+            } catch (error) {
+                const axiosError = error as AxiosError;
+                console.error("Failed to fetch init data", axiosError);
+
+                if (axiosError.response && axiosError.response.status === 401) {
+                    alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+                    localStorage.removeItem("access_token");
+                    navigate("/login");
+                }
+            }
+        };
+
+        fetchInitData();
+    }, [navigate]);
+
     const handleAssetsEdit = (newAmount: string) => {
         setCurrentAssets(newAmount);
-        console.log('자산 변경:', newAmount);
     };
 
     const scrollToGoalForm = () => {
@@ -84,8 +132,46 @@ const SimulationPage = () => {
     const handleConfirm = (data: { title: string; amount: string; period: string }) => {
         setIsConfirmed(true);
         setGoalData(data);
-        // TODO: 저장된 goalData를 백엔드로 보내거나 다음 페이지로 넘김
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    };
+
+    const handleSimulate = async () => {
+        if (!goalData) return;
+
+        const token = localStorage.getItem("access_token");
+        if (!token) return; 
+
+        setIsLoading(true);
+
+        const requestBody: SimulateRequest = {
+            event_name: goalData.title,
+            target_amount: parseInt(goalData.amount.replace(/,/g, '')),
+            period: parseInt(goalData.period),
+            current_asset: parseInt(currentAssets.replace(/,/g, '')) || 0,
+            monthly_save_potential: monthlySavePotential
+        };
+
+        try {
+            const response = await postChallengeSimulate(token, requestBody);
+            
+            navigate('/result', { 
+                state: { 
+                    result: response,
+                    goal: {
+                        name: goalData.title,
+                        targetAmount: requestBody.target_amount,
+                        period: requestBody.period,
+                        currentAmount: requestBody.current_asset
+                    }
+                } 
+            });
+
+        } catch (error) {
+            console.error("Simulation failed", error);
+            alert("시뮬레이션 중 오류가 발생했습니다.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const selectedEventData = EVENTS.find(e => e.id === selectedEventId);
@@ -101,7 +187,6 @@ const SimulationPage = () => {
             <Content>
                 <Container>
                     <CurrentAssetsCard 
-                        // TODO: 소비 분석 값 가져오기
                         amount={currentAssets}
                         onEdit={handleAssetsEdit}
                     />
@@ -164,10 +249,17 @@ const SimulationPage = () => {
                                         <Button
                                             variant={isConfirmed ? "secondary" : "neutral"}
                                             size="md"
-                                            disabled={!isConfirmed}
-                                            onClick={() => navigate('/result')}
+                                            disabled={!isConfirmed || isLoading}
+                                            onClick={handleSimulate}
                                         >
-                                            {isConfirmed ? "시뮬레이션하기" : "목표를 설정해주세요"}
+                                            {isLoading ? (
+                                                <LoadingWrapper>
+                                                    <Spinner />
+                                                    <span>AI 플랜 생성중...</span>
+                                                </LoadingWrapper>
+                                            ) : (
+                                                isConfirmed ? "시뮬레이션하기" : "목표를 설정해주세요"
+                                            )}
                                         </Button>
                                     </BottomButtonWrapper>
                                 </BottomSection>
@@ -176,6 +268,42 @@ const SimulationPage = () => {
                     )}
                 </Container>
             </Content>
+
+            {modalStatus === 'missing' && (
+                <ModalBackdrop>
+                    <ModalBox>
+                        <ModalTitle>소비 분석이 필요해요 🧐</ModalTitle>
+                        <ModalDesc>
+                            정확한 시뮬레이션을 위해 먼저 소비 패턴을 분석해야 합니다.<br/>
+                            분석 페이지로 이동하시겠습니까?
+                        </ModalDesc>
+                        <ModalButtonRow>
+                            <Button onClick={() => navigate('/analysis')}>
+                                소비 분석 하러가기
+                            </Button>
+                        </ModalButtonRow>
+                    </ModalBox>
+                </ModalBackdrop>
+            )}
+            {modalStatus === 'outdated' && (
+                <ModalBackdrop>
+                    <ModalBox>
+                        <ModalTitle>데이터 업데이트 알림 🔔</ModalTitle>
+                        <ModalDesc>
+                            최신 금융 데이터가 반영되지 않았습니다.<br/>
+                            더 정확한 추천을 위해 분석을 갱신하시겠습니까?
+                        </ModalDesc>
+                        <ModalButtonRow>
+                            <Button variant="gray" onClick={() => setModalStatus('none')}>
+                                그냥 진행하기
+                            </Button>
+                            <Button onClick={() => navigate('/analysis')}>
+                                분석 갱신하기
+                            </Button>
+                        </ModalButtonRow>
+                    </ModalBox>
+                </ModalBackdrop>
+            )}
         </Wrapper>
     );
 };
@@ -320,4 +448,80 @@ const AnimatedWrapper = styled.div<{ isVisible: boolean }>`
     opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
     transform: translateY(${({ isVisible }) => (isVisible ? '0' : '20px')});
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+`;
+
+// --- Modal Components ---
+const ModalBackdrop = styled.div`
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+`;
+
+const ModalBox = styled.div`
+    width: 450px;
+    background: white;
+    padding: 40px 30px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    animation: slideUp 0.3s ease-out;
+
+    @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+`;
+
+const ModalTitle = styled.h3`
+    font-size: 2.2rem;
+    font-weight: ${({ theme }) => theme.font.weight.bold};
+    margin-bottom: 16px;
+    color: ${({ theme }) => theme.colors.fontPrimary};
+`;
+
+const ModalDesc = styled.p`
+    font-size: 1.6rem;
+    color: ${({ theme }) => theme.colors.fontSecondary};
+    line-height: 1.5;
+    margin-bottom: 30px;
+`;
+
+const ModalButtonRow = styled.div`
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    
+    > button {
+        flex: 1;
+        font-size: 1.6rem;
+    }
+`;
+
+const LoadingWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+`;
+
+const spin = keyframes`
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+`;
+
+const Spinner = styled.div`
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    animation: ${spin} 1s linear infinite;
 `;

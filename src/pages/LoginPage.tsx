@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import { loginUser } from "../api/auth";
@@ -8,7 +8,10 @@ import { useAuth } from "../context/AuthContext";
 
 const LoginPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { login } = useAuth();
+
+    const from = location.state?.from || "/";
 
     const [form, setForm] = useState({
         userId: "",
@@ -29,7 +32,8 @@ const LoginPage = () => {
         try {
             const data = await loginUser(form);
             login(data.access_token);
-            navigate("/");
+            
+            navigate(from, { replace: true });
         } catch (error: any) {
             const message = error.response?.data?.detail || "로그인 실패!";
             alert(message);

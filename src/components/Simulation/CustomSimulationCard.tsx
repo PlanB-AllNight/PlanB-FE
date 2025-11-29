@@ -26,8 +26,8 @@ const CustomSimulationCard = ({
     isSelected,
     onSelect,
 }: CustomSimulationCardProps) => {
-    const mainTag = plan.tags[0];
-    const isWarning = mainTag === "비추천";
+    const statusText = plan.isRecommended ? "추천" : "비추천";
+    const isWarning = !plan.isRecommended;
 
     return (
         <Wrapper 
@@ -36,7 +36,7 @@ const CustomSimulationCard = ({
         >
             <Header>
                 <Title>{plan.title}</Title>
-                <StatusTag isWarning={isWarning}>{mainTag}</StatusTag>
+                <StatusTag isWarning={isWarning}>{statusText}</StatusTag>
             </Header>
 
             <Content>
