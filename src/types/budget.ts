@@ -34,3 +34,13 @@ export interface CategoryProposalItem {
 }
 
 export type RuleId = "50-30-20" | "60-20-20" | "40-30-30";
+export type StatusType = "적정" | "과소비" | "여유";
+
+export interface BudgetSummary {
+    id: number;
+    plan_type: string;        // "50/30/20"
+    essential_budget: number;
+    optional_budget: number;
+    saving_budget: number;
+    created_at: string;       // ISO string
+}

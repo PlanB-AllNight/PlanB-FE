@@ -1,39 +1,37 @@
 import styled from "styled-components";
 
 interface ChallengeCardProps {
-    eventName: string;
-    planType: "수입 증대 플랜" | "현상 유지 플랜" | "STO 투자 플랜";
+    id: number;
+    title: string;
+    planType: string;
     description: string;
+    startDate: string;
+    endDate: string;
     goalAmount: number;
     goalPeriod: number;
     monthlySavings: number;
-    startDate: string;
-    endDate: string;
 }
 
-const planColors = {
-    "수입 증대 플랜": { bg: "#FFF7ED", text: "#C3420D" },
-    "현상 유지 플랜": { bg: "#FEE2E1", text: "#EF4444" },
-    "STO 투자 플랜": { bg: "#E7EDFF", text: "#1E4ED8" },
-};
-
 const ChallengeCard = ({
-    eventName,
+    id,
+    title,
     planType,
     description,
-    goalAmount,
-    goalPeriod,
-    monthlySavings,
     startDate,
     endDate,
+    goalAmount,
+    goalPeriod,
+    monthlySavings
 }: ChallengeCardProps) => {
     return (
         <Wrapper>
             <Header>
-                <EventName>{eventName}</EventName>
-                <PlanTag planType={planType}>{planType}</PlanTag>
+                <EventName>{title}</EventName>
+                <Description>{description}</Description>
+
             </Header>
-            <Description>{description}</Description>
+            <PlanTag>#{planType}</PlanTag>
+
             <Content>
                 <Row>
                     <Label>목표 금액</Label>
@@ -80,23 +78,25 @@ const Wrapper = styled.div`
 
 const Header = styled.div`
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    gap: 8px;
 `;
 
-const PlanTag = styled.div<{ planType: ChallengeCardProps["planType"] }>`
+const PlanTag = styled.div`
     align-self: flex-start;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     padding: 5px 12px;
     border-radius: 30px;
 
-    background: ${({ planType }) => planColors[planType].bg};
-    color: ${({ planType }) => planColors[planType].text};
+    background: ${({ theme }) => theme.colors.primary[200]};
+    /* color: white; */
     font-weight: ${({ theme }) => theme.font.weight.medium};
 `;
 
 const EventName = styled.h3`
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: ${({ theme }) => theme.font.weight.semibold};
 `;
 

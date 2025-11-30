@@ -1,20 +1,19 @@
 import styled from "styled-components";
 import ProfileIcon from "../../assets/svgs/account.svg?react";
 
-export interface UserProfileSummary {
-    name: string;
-    birth: string;
-    phone: string;
-    savedThisMonth: number;
-    activeChallengeCount: number;
-    completedChallengeCount: number;
-}
-
 interface ProfileSummaryProps {
-    userProfileSummary: UserProfileSummary;
+    name: string;
+    savedThisMonth: number;
+    achievementRate: number | null;
+    ongoingChallenges: number;
 }
 
-const ProfileSummarySection = ({ userProfileSummary }: ProfileSummaryProps) => {
+const ProfileSummarySection = ({
+    name,
+    savedThisMonth,
+    achievementRate,
+    ongoingChallenges
+}: ProfileSummaryProps) => {
     return (
         <Wrapper>
             <ProfileCard>
@@ -22,26 +21,33 @@ const ProfileSummarySection = ({ userProfileSummary }: ProfileSummaryProps) => {
                     <ProfileIcon width={50} height={50} />
                 </IconWrapper>
                 <Info>
-                    <Name>{userProfileSummary.name}</Name>
-                    <SubInfo>{userProfileSummary.birth}</SubInfo>
-                    <SubInfo>{userProfileSummary.phone}</SubInfo>
+                    <Name>{name}</Name>
+                    <SubInfo>{`이번 달 목표를 향해\n달려가고 있어요!💪`}</SubInfo>
                 </Info>
             </ProfileCard>
 
             <SummaryGrid>
                 <SummaryItem>
-                    <Value>{userProfileSummary.savedThisMonth.toLocaleString()}원</Value>
+                    <Value $isEmpty={savedThisMonth == null}>
+                        {savedThisMonth != null
+                            ? `${savedThisMonth.toLocaleString()}원`
+                            : "아직 소비 분석 결과가 없어요"}
+                    </Value>
                     <Label>이번 달 절약 금액</Label>
                 </SummaryItem>
 
                 <SummaryItem>
-                    <Value>{userProfileSummary.activeChallengeCount}개</Value>
-                    <Label>참여 중인 챌린지</Label>
+                    <Value $isEmpty={achievementRate == null}>
+                        {achievementRate != null
+                            ? `${achievementRate}%`
+                            : "아직 분석 결과가 없어요"}
+                    </Value>
+                    <Label>예산 달성률</Label>
                 </SummaryItem>
 
                 <SummaryItem>
-                    <Value>{userProfileSummary.completedChallengeCount}개</Value>
-                    <Label>완료한 챌린지</Label>
+                    <Value>{ongoingChallenges}개</Value>
+                    <Label>진행 중인 챌린지</Label>
                 </SummaryItem>
             </SummaryGrid>
         </Wrapper>
@@ -93,6 +99,8 @@ const SubInfo = styled.div`
     font-size: 2rem;
     color: ${({ theme }) => theme.colors.fontSecondary};
     font-weight: ${({ theme }) => theme.font.weight.regular};
+    white-space: pre-line;
+    line-height: 1.3;
 `;
 
 const SummaryGrid = styled.div`
@@ -108,10 +116,13 @@ const SummaryItem = styled.div`
     padding: 32px 20px;
     width: 240px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 `;
 
-const Value = styled.div`
-    font-size: 2.4rem;
+const Value = styled.div<{ $isEmpty?: boolean }>`
+    font-size: ${({ $isEmpty }) => ($isEmpty ? "1.7rem" : "2.4rem")};
     font-weight: ${({ theme }) => theme.font.weight.bold};
     color: ${({ theme }) => theme.colors.primary[500]};
 `;

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import SectionCard from "./SectionCard";
 
-type StatusType = "적정" | "과소비" | "여유";
+import type { StatusType } from "../../types/budget";
 
 type CategoryBudgetGroup = {
     groupName: string;
