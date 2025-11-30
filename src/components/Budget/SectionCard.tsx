@@ -5,11 +5,12 @@ interface SectionCardProps {
     title: string;
     subtitle?: string;
     children: React.ReactNode;
+    className?: string;
 }
 
-const SectionCard = ({ icon, title, subtitle, children }: SectionCardProps) => {
+const SectionCard = ({ icon, title, subtitle, children, className }: SectionCardProps) => {
     return (
-        <Wrapper>
+        <Wrapper className={className}>
             <Header>
                 {icon && <Icon>{icon}</Icon>}
                 <TextBox>
