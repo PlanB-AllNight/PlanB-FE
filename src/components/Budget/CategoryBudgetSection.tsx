@@ -1,22 +1,22 @@
 import styled from "styled-components";
 import SectionCard from "./SectionCard";
 
-interface BudgetCategoryItem {
-    name: string;
-    current: number;
-    recommended: number;
-    status: StatusType;
-}
+type StatusType = "적정" | "과소비" | "여유";
 
-interface BudgetCategoryGroup {
-    groupName: BudgetGroupName;
+type CategoryBudgetGroup = {
+    groupName: string;
     groupAmount: number;
-    items: BudgetCategoryItem[];
+    items: {
+        name: string;
+        current: number;
+        recommended: number;
+        status: StatusType;
+    }[];
 }
 
-interface CategoryBudgetProps {
-    categoryBudgetGroups: BudgetCategoryGroup[];
-}
+type CategoryBudgetProps = {
+    categoryBudgetGroups: CategoryBudgetGroup[];
+};
 
 const statusColors = {
     적정: {
@@ -36,7 +36,6 @@ const statusColors = {
     },
 } as const;
 
-export type StatusType = keyof typeof statusColors;
 export type BudgetGroupName = "필수 지출" | "선택 지출" | "저축/투자";
 
 const CategoryBudgetSection = ({ categoryBudgetGroups }: CategoryBudgetProps) => {
@@ -125,7 +124,7 @@ const CategoryBudgetCard = styled.div`
     gap: 18px;
 `;
 
-const Circle = styled.div<{ status: StatusType }>`
+const Circle = styled.div<{ status: "적정" | "과소비" | "여유" }>`
     width: 25px;
     height: 25px;
     border-radius: 50%;
@@ -151,7 +150,7 @@ const Amount = styled.p`
     color: ${({ theme }) => theme.colors.fontSecondary};
 `;
 
-const Tag = styled.div<{ status: StatusType }>`
+const Tag = styled.div<{ status: "적정" | "과소비" | "여유" }>`
     display: flex;
     justify-content: center;
     align-items: center;
