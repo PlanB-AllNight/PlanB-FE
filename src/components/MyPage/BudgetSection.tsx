@@ -50,7 +50,7 @@ const BudgetSection = () => {
                 const res = await getBudgetDetail(selectedId); // GET /budget/{id}
                 setDetail(res.data);
             } catch (e) {
-                console.error("❌ 예산 상세 조회 실패", e);
+                console.error("예산 상세 조회 실패", e);
                 setDetail(null);
             } finally {
                 setDetailLoading(false);
@@ -77,7 +77,7 @@ const BudgetSection = () => {
                         {listLoading ? (
                             <BudgetListSkeleton />
                         ) : budgets.length === 0 ? (
-                            <EmptyText>저장된 예산안이 없습니다. 먼저 예산을 생성해보세요.</EmptyText>
+                            <DetailSkeleton>저장된 예산안이 없어요. 먼저 예산을 생성해보세요!</DetailSkeleton>
                         ) : (
                             <BudgetCardRow>
                                 {budgets.map((item) => {
@@ -124,7 +124,7 @@ const BudgetSection = () => {
 
                     {/* 선택된 예산안 상세 */}
                     {detailLoading || !detail ? (
-                        <DetailSkeleton>예산안을 불러오는 중입니다...</DetailSkeleton>
+                        <EmptyText></EmptyText>
                     ) : (
                         <>
                             {/* 상단 3박스 (필수/선택/저축) */}
@@ -162,7 +162,7 @@ const BudgetSection = () => {
                     )}
                 </Content>
             </SectionComponent>
-        </Wrapper>
+        </Wrapper >
     );
 };
 
@@ -296,12 +296,14 @@ const EmptyText = styled.p`
 // 상세 skeleton
 const DetailSkeleton = styled.div`
     width: 100%;
-    height: 300px;
+    height: 350px;
     border-radius: 13px;
     border: 2px solid ${({ theme }) => theme.colors.primary[300]};
     display: flex;
     align-items: center;
     justify-content: center;
+    background: #fbffff;
+    font-size: 1.8rem;
     color: ${({ theme }) => theme.colors.fontSecondary};
 `;
 

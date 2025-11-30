@@ -33,7 +33,7 @@ const ChallengeListSection = () => {
     const mappedChallenges = challenges.map((item) => mapMyChallenge(item));
 
     const ongoingChallengeCnt = challenges.length;
-
+    const isEmpty = mappedChallenges.length === 0;
 
     return (
         <Wrapper>
@@ -55,11 +55,19 @@ const ChallengeListSection = () => {
                 </Stats>
 
                 <SectionTitle>진행 중인 챌린지</SectionTitle>
-                <Grid>
-                    {mappedChallenges.map((ch) => (
-                        <ChallengeCard key={ch.id} {...ch} />
-                    ))}
-                </Grid>
+                {isEmpty ? (
+                    <EmptyBox>
+                        <EmptyText>
+                            아직 시작한 챌린지가 없어요. 새로운 챌린지를 시작해보세요!
+                        </EmptyText>
+                    </EmptyBox>
+                ) : (
+                    <Grid>
+                        {mappedChallenges.map((ch) => (
+                            <ChallengeCard key={ch.id} {...ch} />
+                        ))}
+                    </Grid>
+                )}
             </SectionComponent>
         </Wrapper>
     );
@@ -109,4 +117,20 @@ const Grid = styled.div`
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
+`;
+
+const EmptyBox = styled.div`
+    width: 100%;
+    height: 350px;
+    border-radius: 13px;
+    border: 2px solid ${({ theme }) => theme.colors.primary[300]};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fbffff;
+`;
+
+const EmptyText = styled.p`
+    font-size: 1.8rem;
+    color: ${({ theme }) => theme.colors.fontSecondary};
 `;

@@ -38,8 +38,27 @@ const SpendingSection = () => {
         fetchTrend();
     }, []);
 
-    if (loading || !viewModel) {
+    if (loading) {
         return <div>소비 추이를 불러오는 중입니다...</div>;
+    }
+
+    if (!viewModel) {
+        return (
+            <Wrapper>
+                <SectionComponent
+                    title="소비 분석"
+                    description="지난달과 비교한 소비 패턴을 확인하세요"
+                    buttonText="소비 분석하기"
+                    onButtonClick={() => navigate("/analysis")}
+                >
+                    <NoBudgetBox>
+                        <NoBudgetText>
+                            아직 소비 분석 데이터가 없습니다. 먼저 소비 분석을 진행해보세요.
+                        </NoBudgetText>
+                    </NoBudgetBox>
+                </SectionComponent>
+            </Wrapper>
+        );
     }
 
     const { summary, topCategory, trendChartData, categoryAnalysis } = viewModel;
@@ -327,5 +346,21 @@ const AmountText = styled.span`
 const EmptyText = styled.p`
     margin-top: 12px;
     font-size: 1.4rem;
+    color: ${({ theme }) => theme.colors.fontSecondary};
+`;
+
+const NoBudgetBox = styled.div`
+    width: 100%;
+    height: 350px;
+    border-radius: 13px;
+    border: 2px solid ${({ theme }) => theme.colors.primary[300]};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fbffff;
+`;
+
+const NoBudgetText = styled.p`
+    font-size: 1.8rem;
     color: ${({ theme }) => theme.colors.fontSecondary};
 `;
