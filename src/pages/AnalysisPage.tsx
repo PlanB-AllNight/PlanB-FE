@@ -10,6 +10,12 @@ import { mapAnalysisResponse } from "../utils/analysisMapper";
 import { recommendBudget } from "../api/budget";
 import { getAnalysisDetail } from "../api/spending";
 
+function formatYearMonth(ym?: string) {
+    if (!ym) return ""; // 혹은 "-" 같은 기본값
+    const [year, month] = ym.split("-");
+    return `${year}년 ${month}월`;
+}
+
 const AnalysisPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -75,6 +81,8 @@ const AnalysisPage = () => {
 
     const parsedData = mapAnalysisResponse(analysisData);
 
+    const yearMonthLabel = formatYearMonth(parsedData.summary.date);
+
     return (
         <Wrapper>
             <HeroSection
@@ -84,6 +92,7 @@ const AnalysisPage = () => {
             />
 
             <Content>
+                <Title>{yearMonthLabel} 소비 분석</Title>
                 <KPISection>
                     <KPICard>
                         <Label>총 수입</Label>
@@ -140,6 +149,12 @@ const Content = styled.div`
     display: flex;
     flex-direction: column;
     gap: 52px;
+`;
+
+const Title = styled.h2`
+    font-size: 3rem;
+    font-weight: ${({ theme }) => theme.font.weight.bold};
+    margin-bottom: -20px;
 `;
 
 const KPISection = styled.div`

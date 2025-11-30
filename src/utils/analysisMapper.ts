@@ -5,6 +5,7 @@ export const mapAnalysisResponse = (backendData: any): AnalysisResult => {
 
     return {
         summary: {
+            date: d.month,
             totalIncome: d.total_income,
             totalSpending: d.total_spent,
             possibleSaving: d.save_potential,

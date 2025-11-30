@@ -7,6 +7,7 @@ export interface CategorySpending {
 
 export interface AnalysisResult {
     summary: {
+        date: string;
         totalIncome: number;        // 총 수입
         totalSpending: number;      // 총 지출
         possibleSaving: number;     // 저축 가능 금액
