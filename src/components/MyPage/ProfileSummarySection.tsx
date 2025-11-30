@@ -31,7 +31,7 @@ const ProfileSummarySection = ({
                     <Value $isEmpty={savedThisMonth == null}>
                         {savedThisMonth != null
                             ? `${savedThisMonth.toLocaleString()}원`
-                            : "아직 소비 분석 결과가 없어요"}
+                            : `아직 소비 분석 또는\n예산 추천 결과가 없어요`}
                     </Value>
                     <Label>이번 달 절약 금액</Label>
                 </SummaryItem>
@@ -40,7 +40,7 @@ const ProfileSummarySection = ({
                     <Value $isEmpty={achievementRate == null}>
                         {achievementRate != null
                             ? `${achievementRate}%`
-                            : "아직 분석 결과가 없어요"}
+                            : `아직 소비 분석 또는\n예산 추천 결과가 없어요`}
                     </Value>
                     <Label>예산 달성률</Label>
                 </SummaryItem>
@@ -125,6 +125,9 @@ const Value = styled.div<{ $isEmpty?: boolean }>`
     font-size: ${({ $isEmpty }) => ($isEmpty ? "1.7rem" : "2.4rem")};
     font-weight: ${({ theme }) => theme.font.weight.bold};
     color: ${({ theme }) => theme.colors.primary[500]};
+
+    white-space: pre-line;
+    line-height: 1.2;
 `;
 
 const Label = styled.div`
