@@ -23,14 +23,12 @@ const PolicyDetailModal = ({ policy, onClose }: ModalProps) => {
         <Content>
           <Section>
             <SectionLabel>지원 내용</SectionLabel>
-            <DescText>{policy.description}</DescText>
+            <DescText dangerouslySetInnerHTML={{ __html: policy.description }} />
           </Section>
 
           <Section>
             <SectionLabel>상세 정보</SectionLabel>
-            <DetailBox>
-              {policy.detailContent}
-            </DetailBox>
+            <DetailBox dangerouslySetInnerHTML={{ __html: policy.detailContent }} />
           </Section>
 
           <NoticeBox>
@@ -73,6 +71,7 @@ const Backdrop = styled.div`
 
 const ModalContainer = styled.div`
   width: 600px;
+  max-height: 85vh;
   background: white;
   border-radius: 13px;
   padding: 40px;
@@ -81,6 +80,7 @@ const ModalContainer = styled.div`
   gap: 26px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   animation: slideUp 0.3s ease-out;
+  overflow: hidden;
 
   @keyframes slideUp {
     from {
@@ -98,6 +98,7 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  flex-shrink: 0;
 `;
 
 const Title = styled.h2`
@@ -123,6 +124,20 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 26px;
+  overflow-y: auto;
+  padding-right: 10px;
+
+  &::-webkit-scrollbar {
+    display: block;
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
 `;
 
 const Section = styled.div`
@@ -135,7 +150,7 @@ const SectionLabel = styled.h4`
   font-weight: ${({ theme }) => theme.font.weight.bold};
   color: ${({ theme }) => theme.colors.fontPrimary};
 `;
-const DescText = styled.p`
+const DescText = styled.div`
   font-size: 1.6rem;
   line-height: 1.3;
   color: ${({ theme }) => theme.colors.fontPrimary};
@@ -150,6 +165,19 @@ const DetailBox = styled.div`
   color: ${({ theme }) => theme.colors.fontPrimary};
   line-height: 1.4;
   white-space: pre-line;
+
+  b, strong {
+    font-weight: bold;
+    color: ${({ theme }) => theme.colors.primary[500]};
+  }
+
+  ul, ol {
+    margin-left: 20px;
+    list-style-type: disc;
+  }
+  li {
+    margin-bottom: 4px;
+  }
 `;
 
 const NoticeBox = styled.div`

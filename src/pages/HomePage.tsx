@@ -63,7 +63,7 @@ const HomePage = () => {
                 title="지금 시작해보세요"
                 description="코스콤 AI Agent Challenge 출품작으로 개발된 차세대 개인화 금융 관리 플랫폼을 체험해보세요"
                 secondaryButton={{ label: "소비 분석하기", link: "/analysis" }}
-                ghostButton={{ label: "지원 정보 보기", link: "/info" }}
+                ghostButton={{ label: "지원 정보 보기", link: "/support" }}
             />
 
             <Footer />
