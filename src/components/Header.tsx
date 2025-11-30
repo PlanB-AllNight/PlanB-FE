@@ -24,7 +24,7 @@ const Header = () => {
             console.error("로그아웃 실패:", err);
         } finally {
             localStorage.removeItem("access_token");
-            navigate("/");
+            window.location.href = "/login";
             alert("로그아웃 되었습니다.");
         }
     }
