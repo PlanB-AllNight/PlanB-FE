@@ -16,3 +16,7 @@ export const analyzeSpending = async (month?: string) => {
 
     return response.data;
 };
+
+export const getAnalysisDetail = (analysisId: number) => {
+    return api.get(`/analyze/spending/${analysisId}`);
+};

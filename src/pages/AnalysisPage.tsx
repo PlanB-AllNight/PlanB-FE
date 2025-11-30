@@ -1,20 +1,79 @@
 import styled from "styled-components";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import type { AnalysisResult } from "../types/analysis";
 import HeroSection from "../components/common/HeroSection";
 import CategorySection from "../components/Analysis/CategorySection";
 import AiInsightSection from "../components/Analysis/AiInsightSection";
 import Button from "../components/common/Button";
+
 import { mapAnalysisResponse } from "../utils/analysisMapper";
+import { recommendBudget } from "../api/budget";
+import { getAnalysisDetail } from "../api/spending";
 
 const AnalysisPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
+
     const rawData = location.state?.analysisResult;
+    const analysisResultId = location.state?.analysisResultId;
 
-    if (!rawData) return <div>데이터가 없습니다.</div>
+    const [loading, setLoading] = useState<boolean>(!rawData && !!analysisResultId);
+    // 서버에서 가져올 원본 분석 데이터를 담음
+    const [analysisData, setAnalysisData] = useState<any | null>(rawData ?? null);
 
-    const data = mapAnalysisResponse(rawData);
+    // rawData가 없고, analysisResultId만 있는 경우 -> GET 요청
+    useEffect(() => {
+        if (rawData) return; // 이미 데이터 있으면 GET 불필요
+        if (!analysisResultId) return;
+
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const result = await getAnalysisDetail(analysisResultId);
+                if (result) {
+                    setAnalysisData(result.data);
+                } else {
+                    console.warn("서버에서 빈 데이터가 반환되었습니다.");
+                }
+            } catch (e) {
+                console.error("❌ 분석 데이터 조회 실패:", e);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [analysisResultId, rawData]);
+
+    const handleBudgetRecommend = async () => {
+        try {
+            setLoading(true);
+            const planRule = "50/30/20";
+
+            const result = await recommendBudget(planRule);
+            setLoading(false);
+
+            navigate("/budget", {
+                state: { budgetResult: result }
+            });
+        } catch (error: any) {
+            console.error(error);
+            setLoading(false);
+            alert(error.response?.data?.detail || "예산 추천을 불러오지 못했습니다.");
+        }
+    }
+
+    // 1) GET 요청 로딩 (초기 분석 데이터 불러올 때만)
+    if (!analysisData && loading) {
+        return <div>분석 결과를 불러오는 중입니다...</div>;
+    }
+
+    // 2) 데이터가 없으면 에러 처리
+    if (!analysisData) {
+        return <div>분석 데이터가 존재하지 않습니다.</div>;
+    }
+
+    const parsedData = mapAnalysisResponse(analysisData);
 
     return (
         <Wrapper>
@@ -28,20 +87,20 @@ const AnalysisPage = () => {
                 <KPISection>
                     <KPICard>
                         <Label>총 수입</Label>
-                        <Value>{data.summary.totalIncome.toLocaleString()}원</Value>
+                        <Value>{parsedData.summary.totalIncome.toLocaleString()}원</Value>
                     </KPICard>
                     <KPICard>
                         <Label>총 지출</Label>
-                        <Value>{data.summary.totalSpending.toLocaleString()}원</Value>
+                        <Value>{parsedData.summary.totalSpending.toLocaleString()}원</Value>
                     </KPICard>
                     <KPICard>
                         <Label>저축 가능액</Label>
-                        <Value>{data.summary.possibleSaving.toLocaleString()}원</Value>
+                        <Value>{parsedData.summary.possibleSaving.toLocaleString()}원</Value>
                     </KPICard>
                 </KPISection>
 
-                <CategorySection categories={data.categories} insights={data.insights} />
-                <AiInsightSection findings={data.aiAnalysis.findings} suggestions={data.aiAnalysis.suggestions} />
+                <CategorySection categories={parsedData.categories} insights={parsedData.insights} />
+                <AiInsightSection findings={parsedData.aiAnalysis.findings} suggestions={parsedData.aiAnalysis.suggestions} />
 
                 <BottomSection>
                     <BottomTitle>AI가 제안하는 맞춤 예산</BottomTitle>
@@ -50,9 +109,16 @@ const AnalysisPage = () => {
                         <Button
                             variant="secondary"
                             size="md"
-                            onClick={() => navigate('/budget')}
+                            onClick={handleBudgetRecommend}
                         >
-                            추천 예산 확인하기
+                            {loading ? (
+                                <>
+                                    <Spinner />
+                                    분석 중...
+                                </>
+                            ) : (
+                                "추천 예산 확인하기"
+                            )}
                         </Button>
                     </BottomButtonWrapper>
                 </BottomSection>
@@ -136,4 +202,20 @@ const BottomDesc = styled.p`
 const BottomButtonWrapper = styled.div`
     width: 206px;
     margin-top: 16px;
+`;
+
+const Spinner = styled.div`
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    animation: spin 0.6s linear infinite;
+
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 `;
