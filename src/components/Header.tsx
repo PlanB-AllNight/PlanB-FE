@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { logout } from "../api/auth";
 
 const Header = () => {
     const { pathname } = useLocation();
@@ -15,6 +16,18 @@ const Header = () => {
         }
         navigate(path);
     };
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+        } catch (err) {
+            console.error("로그아웃 실패:", err);
+        } finally {
+            localStorage.removeItem("access_token");
+            navigate("/");
+            alert("로그아웃 되었습니다.");
+        }
+    }
 
     return (
         <Container>
@@ -43,10 +56,26 @@ const Header = () => {
                 >지원정보/상담</MenuItem>
 
                 {isLoggedIn ? (
-                    <MenuItem
-                        active={pathname === "/mypage"}
-                        onClick={() => navigate("/mypage")}
-                    >마이페이지</MenuItem>
+                    <DropdownWrapper>
+                        <MenuItem
+                            active={pathname === "/mypage"}
+                            onClick={() => checkAndNavigate("/mypage")}
+                        >
+                            마이페이지
+                        </MenuItem>
+
+                        <DropdownMenu>
+                            <DropdownItem
+                                onClick={() => checkAndNavigate("/mypage")}
+
+                            >
+                                내 정보 확인하기
+                            </DropdownItem>
+                            <DropdownItem onClick={handleLogout}>
+                                로그아웃
+                            </DropdownItem>
+                        </DropdownMenu>
+                    </DropdownWrapper>
                 ) : (
                     <MenuItem
                         active={pathname === "/login"}
@@ -94,4 +123,43 @@ const MenuItem = styled.div <{ active?: boolean }>`
     color: ${({ active, theme }) =>
         active ? theme.colors.primary[500] : theme.colors.fontPrimary};
     cursor: pointer;
+`;
+
+const DropdownWrapper = styled.div`
+    position: relative;
+    display: inline-block;
+
+    &:hover > div {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0px);
+    }
+`;
+
+const DropdownMenu = styled.div`
+    position: absolute;
+    top: 110%;
+    right: 0;
+    min-width: 160px;
+
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    padding: 8px 0;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-5px);
+    transition: 0.2s ease;
+    z-index: 100;
+`;
+
+const DropdownItem = styled.div`
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 1.4rem;
+
+    &:hover {
+        background-color: #f5f9ff;
+    }
 `;
