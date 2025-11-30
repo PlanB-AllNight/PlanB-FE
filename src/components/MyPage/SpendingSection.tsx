@@ -50,7 +50,7 @@ const SpendingSection = () => {
                 title="소비 분석"
                 description="지난달과 비교한 소비 패턴을 확인하세요"
                 buttonText="소비 분석하기"
-                onButtonClick={() => navigate("/analyze")}
+                onButtonClick={() => navigate("/analysis")}
             >
                 <Content>
                     {/* 상단 KPI 3개 */}

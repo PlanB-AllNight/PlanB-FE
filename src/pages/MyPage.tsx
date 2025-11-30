@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import SwitchTabs from "../components/MyPage/SwitchTabs";
 import ProfileSummarySection from "../components/MyPage/ProfileSummarySection";
 import SpendingSection from "../components/MyPage/SpendingSection";
+import BudgetSection from "../components/MyPage/BudgetSection";
 import ChallengeListSection from "../components/MyPage/ChallengeListSection";
 
 import { getMyPageSummary } from "../api/mypage";
@@ -33,7 +34,7 @@ const MyPage = () => {
             <SwitchTabs activeTab={activeTab} setActiveTab={setActiveTab} />
             <Content>
                 {activeTab === "소비 분석" && <SpendingSection />}
-                {/* {activeTab === "예산 관리" && <BudgetSection />} */}
+                {activeTab === "예산 관리" && <BudgetSection />}
                 {activeTab === "챌린지" && <ChallengeListSection />}
             </Content>
         </Wrapper>
