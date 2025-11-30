@@ -1,59 +1,41 @@
 import styled from "styled-components";
+import { useState, useEffect } from "react";
+
+import SwitchTabs from "../components/MyPage/SwitchTabs";
 import ProfileSummarySection from "../components/MyPage/ProfileSummarySection";
+import SpendingSection from "../components/MyPage/SpendingSection";
 import ChallengeListSection from "../components/MyPage/ChallengeListSection";
-import type { UserProfileSummary } from "../components/MyPage/ProfileSummarySection";
 
-const mockProfileSummary: UserProfileSummary = {
-    name: "장지요",
-    birth: "2003-04-30",
-    phone: "01071628842",
-    savedThisMonth: 250000,
-    activeChallengeCount: 3,
-    completedChallengeCount: 12,
-};
-
-const mockChallenges: MyChallenge[] = [
-    {
-        id: 1,
-        eventName: "교환학생",
-        planType: "수입 증대 플랜",
-        description: "현재 소비를 유지하고, 근로장학금 등 외부 수입 11만원 확보",
-        goalAmount: 8000000,
-        goalPeriod: 12,
-        monthlySavings: 800000,
-        startDate: "2025-05-10",
-        endDate: "2026-05-10",
-    },
-    {
-        id: 2,
-        eventName: "해외여행",
-        planType: "현상 유지 플랜",
-        description: "아무런 절약/투자 없이, 현재 월 저축액(30만원) 유지",
-        goalAmount: 8000000,
-        goalPeriod: 12,
-        monthlySavings: 800000,
-        startDate: "2025-05-10",
-        endDate: "2026-05-10",
-    },
-    {
-        id: 3,
-        eventName: "노트북 구매",
-        planType: "STO 투자 플랜",
-        description: "현재 월 저축액(30만원)을 KOSCOM STO에 투자 (연 7% 복리 적용)",
-        goalAmount: 8000000,
-        goalPeriod: 12,
-        monthlySavings: 800000,
-        startDate: "2025-05-10",
-        endDate: "2026-05-10",
-    },
-];
+import { getMyPageSummary } from "../api/mypage";
 
 const MyPage = () => {
+    const [summary, setSummary] = useState<any | null>(null);
+    const [activeTab, setActiveTab] = useState("소비 분석");
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await getMyPageSummary();
+            setSummary(data);
+        };
+        fetchData();
+    }, []);
+
+    if (!summary) return <div>불러오는 중...</div>;
+
     return (
         <Wrapper>
-            <ProfileSummarySection userProfileSummary={mockProfileSummary} />
-            <SectionTitle>마이 챌린지</SectionTitle>
-            <ChallengeListSection challenges={mockChallenges} />
+            <ProfileSummarySection
+                name={summary.name}
+                savedThisMonth={summary.saved_amount}
+                achievementRate={summary.achievement_rate}
+                ongoingChallenges={summary.ongoing_challenges}
+            />
+            <SwitchTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+            <Content>
+                {activeTab === "소비 분석" && <SpendingSection />}
+                {/* {activeTab === "예산 관리" && <BudgetSection />} */}
+                {activeTab === "챌린지" && <ChallengeListSection />}
+            </Content>
         </Wrapper>
     );
 };
@@ -71,7 +53,6 @@ const Wrapper = styled.div`
     gap: 60px;
 `;
 
-const SectionTitle = styled.h2`
-    font-size: 3rem;
-    font-weight: ${({ theme }) => theme.font.weight.bold};
-`;
+const Content = styled.div`
+    width: 100%;
+`
