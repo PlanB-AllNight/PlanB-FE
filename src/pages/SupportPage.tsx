@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import HeroSection from "../components/common/HeroSection";
 import ChatbotSection from "../components/Support/ChatbotSection";
@@ -8,6 +8,8 @@ import PolicyDetailModal from "../components/Support/PolicyDetailModal";
 import Button from "../components/common/Button";
 
 import SearchIcon from "../assets/svgs/search.svg?react";
+
+import { getSupportPolicies, type SupportPolicyResponse } from "../api/support";
 
 export type CategoryType = 'scholarship' | 'loan' | 'living' | 'housing' | 'invest';
 
@@ -32,70 +34,63 @@ const CATEGORIES = [
     { id: 'invest', label: '자산 형성', desc: '자산 형성 지원금, 청년 재태크' },
 ] as const;
 
-const MOCK_POLICIES: Policy[] = [
-    {
-        id: 1,
-        category: 'scholarship',
-        title: '국가장학금 1유형',
-        description: '경제적으로 어려운 학생들에게 등록금을 지원하는 국가 장학금',
-        supporter: '한국장학재단',
-        period: '2025.05.21 ~ 2025.06.20',
-        target: '국내 대학 재학생 (소득 8구간 이하)',
-        payment: '등록금 우선 감면',
-        detailContent: '가구원 소득, 재산 등을 반영하여 소득산정액을 산출하고 차등 지원합니다.\n지원 금액: 학기별 최대 285만원 ~ 175만원',
-        link: 'https://www.kosaf.go.kr'
-    },
-    {
-        id: 2,
-        category: 'housing',
-        title: '청년 전세임대',
-        description: 'LH가 주택소유자와 전세계약을 체결하고 청년에게 재임대',
-        supporter: '한국장학재단',
-        period: '상시 모집',
-        target: '만 19세~39세 무주택 청년',
-        payment: '전세보증금 지원',
-        detailContent: '도심 내 저소득 계층 청년이 현 생활권에서 안정적으로 거주할 수 있도록 지원합니다.\n\n수도권 최대 1.2억원 지원',
-        link: 'https://apply.jh.or.kr'
-    },
-    {
-        id: 3,
-        category: 'scholarship',
-        title: '근로장학금',
-        description: '교내 행정 도우미 참여 시 학기당 월 40만원 지급',
-        supporter: '한국장학재단',
-        period: '4월 중순 ~ 말',
-        target: '대학 재학생, 소득구간 4분위 이하',
-        payment: '월 지급, 등록금 차감 가능',
-        detailContent: '교내 다양한 부서에서 근로를 제공하고 장학금을 수령합니다.\n주 10시간 이내 근무 권장.',
-        link: '#'
-    },
-    {
-        id: 4,
-        category: 'loan',
-        title: '취업 후 상환 학자금대출',
-        description: '취업 후 소득이 발생한 시점부터 상환하는 대출 제도',
-        supporter: '한국장학재단',
-        period: '상시 신청',
-        target: '만 35세 이하 학부생',
-        payment: '등록금 전액 대출',
-        detailContent: '재학 중에는 이자 부담 없이, 취업 후 일정 소득 발생 시점부터 의무적으로 상환합니다.',
-        link: '#'
-    },
-];
+const API_CATEGORY_MAP: Record<CategoryType, string> = {
+    scholarship: '장학금/지원금',
+    loan: '대출 상품',
+    living: '생활/복지',
+    housing: '취업/진로',
+    invest: '자산 형성'
+};
 
 const SupportPage = () => {
     const navigate = useNavigate();
     const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null);
     const [selectedPolicy, setSelectedPolicy] = useState<Policy | null>(null);
 
+    const [policies, setPolicies] = useState<Policy[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+
     const resultRef = useRef<HTMLDivElement>(null);
 
-    const filteredPolicies = selectedCategory 
-        ? MOCK_POLICIES.filter(p => p.category === selectedCategory)
-        : [];
+    useEffect(() => {
+        const fetchPolicies = async () => {
+            if (!selectedCategory) return;
+
+            setIsLoading(true);
+            try {
+                const queryParam = API_CATEGORY_MAP[selectedCategory];
+                
+                const data: SupportPolicyResponse[] = await getSupportPolicies(queryParam);
+
+                const mappedData: Policy[] = data.map((item) => ({
+                    id: item.id,
+                    category: selectedCategory,
+                    title: item.title,
+                    description: item.subtitle,
+                    supporter: item.institution,
+                    period: item.apply_period,
+                    target: item.target,
+                    payment: item.pay_method,
+                    detailContent: item.content,
+                    link: item.application_url
+                }));
+
+                setPolicies(mappedData);
+            } catch (error) {
+                console.error("정책 목록 조회 실패:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchPolicies();
+    }, [selectedCategory]);
 
     const handleCategoryClick = (id: CategoryType) => {
+        if (selectedCategory === id) return;
+
         setSelectedCategory(id);
+        setPolicies([]);
         
         setTimeout(() => {
             if (resultRef.current) {
@@ -151,8 +146,10 @@ const SupportPage = () => {
                         </Placeholder>
                     ) : (
                         <Grid>
-                            {filteredPolicies.length > 0 ? (
-                                filteredPolicies.map(policy => (
+                            {isLoading ? (
+                                <LoadingMsg>데이터를 불러오는 중입니다...</LoadingMsg>
+                            ) : policies.length > 0 ? (
+                                policies.map(policy => (
                                     <PolicyCard 
                                         key={policy.id} 
                                         policy={policy} 
@@ -160,7 +157,7 @@ const SupportPage = () => {
                                     />
                                 ))
                             ) : (
-                                <EmptyMsg>해당 카테고리의 정보가 없습니다.</EmptyMsg>
+                                <EmptyMsg>해당 카테고리의 지원 정보가 없습니다.</EmptyMsg>
                             )}
                         </Grid>
                     )}
@@ -170,7 +167,7 @@ const SupportPage = () => {
                     <Button 
                         variant="primary" 
                         size="md"
-                        onClick={() => navigate('/result')}
+                        onClick={() => navigate('/analysis')}
                     >
                         소비 분석 시작하기
                     </Button>
@@ -218,7 +215,7 @@ const P = styled.p`font-size: 1.6rem; color: ${({theme})=>theme.colors.fontSecon
 const CategoryGrid = styled.div`
     display: flex; 
     gap: 13px; 
-    margin-bottom: 100px;
+    margin-bottom: 30px;
     flex-wrap: wrap;
     justify-content: center;
 `;
@@ -295,8 +292,17 @@ const EmptyMsg = styled.p`
     grid-column: 1 / -1;
 `;
 
+const LoadingMsg = styled.p`
+    text-align: center; 
+    padding: 50px; 
+    font-size: 1.8rem; 
+    color: ${({theme})=>theme.colors.primary[500]};
+    font-weight: bold;
+    grid-column: 1 / -1;
+`;
+
 const BottomButtonRow = styled.div`
-    margin-top: 200px;
+    margin-top: 150px;
     display: flex;
     justify-content: center;
     gap: 20px;
