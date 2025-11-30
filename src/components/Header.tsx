@@ -49,9 +49,9 @@ const Header = () => {
                     >마이페이지</MenuItem>
                 ) : (
                     <MenuItem
-                        active={pathname === "/signup"}
-                        onClick={() => navigate("/signup")}
-                    >회원가입</MenuItem>
+                        active={pathname === "/login"}
+                        onClick={() => navigate("/login")}
+                    >로그인</MenuItem>
                 )}
             </MenuList>
         </Container>
